@@ -6,6 +6,7 @@ use App\Models\Masters\Canteen;
 use App\Models\Masters\Car;
 use App\Models\Masters\Driver;
 use Illuminate\Support\Carbon;
+use App\Models\Administrations\RentBuilding;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,12 @@ use Illuminate\Support\Carbon;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// Route::get('/', function () {
+//     $data = RentBuilding::find(1);
+
+//     dd($data);
+// });
 
 Route::get('/generate-data', function () {
 

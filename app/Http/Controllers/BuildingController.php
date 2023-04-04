@@ -20,6 +20,12 @@ class BuildingController extends Controller
      *  -------------------------------------------------
      */
 
+    public function api_get_rent_by_id(Request $request)
+    { }
+
+    public function api_pay_rent(Request $request)
+    { }
+
     public function api_rent_building(Request $request)
     {
         try {
@@ -41,11 +47,17 @@ class BuildingController extends Controller
                 'building_id' => $building->id,
             ]);
 
+            $rent_data->building = $building;
+            $rent_data->rent = $rental;
+
             return ResponseFormatter::success($rent_data, 'Gedung berhasil di-sewa');
         } catch (\Throwable $th) {
             return ResponseFormatter::error([], $th->getMessage());
         }
     }
+
+    public function api_get_building_by_id(Request $request)
+    { }
 
     public function api_get_all_buildings()
     {
@@ -76,7 +88,7 @@ class BuildingController extends Controller
         $end_date = $carbon_date;
         $duration = $end_date->diffInDays($start_date);
 
-        if($duration >= 30)
+        if ($duration >= 30)
             throw new \Exception('Durasi penyewaan melebihi batas yang di tentukan!');
 
         $rental = Rental::create([
