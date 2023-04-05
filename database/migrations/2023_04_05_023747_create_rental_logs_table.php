@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rent_buildings', function (Blueprint $table) {
+        Schema::create('rental_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('rent_id')->unique();
-            $table->foreignId('building_id')->unique();
+            $table->foreignId('rent_id');
+            $table->integer('model_id');
+            $table->string('model_type');
             $table->timestamps();
 
 
             $table->foreign('user_id')->on('users')->references('id');
             $table->foreign('rent_id')->on('trx_rentals')->references('id');
-            $table->foreign('building_id')->on('master_buildings')->references('id');
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rent_buildings');
+        Schema::dropIfExists('rental_logs');
     }
 };

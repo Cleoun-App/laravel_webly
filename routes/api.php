@@ -27,8 +27,10 @@ Route::post('/change-password', [AuthController::class, 'change_password']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/rent/building', [BuildingController::class, 'api_rent_building']);
-    Route::get('/master/buildings', [BuildingController::class, 'api_get_all_buildings']);
+    Route::get('/get/rented/building/{field}/{id}', [BuildingController::class, 'api_get_rent_by_param']);
+    Route::post('/rent/building/pay', [BuildingController::class, 'api_pay_rent']);
     Route::delete('/delete/rented/{id}/building/', [BuildingController::class, 'api_delete_rented_building']);
+    Route::get('/master/buildings', [BuildingController::class, 'api_get_all_buildings']);
 
 
 });
