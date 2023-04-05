@@ -59,7 +59,52 @@ class BuildingController extends Controller
 
     public function api_pay_rent(Request $request)
     {
+        try {
+            $payment_data = $request->payment_data;
+            $payment_method = $request->payment_method;
+            $rental_id = $request->rental_id;
+            $penalty = $request->penalty;
+            $adm_fee = $request->adm_fee;
+            $cost = $request->cost;
 
+            $total_payment = $cost + $adm_fee + $penalty;
+
+            $rental = Rental::findOrFail($rental_id);
+
+            $rent_building = RentBuilding::where('rent_id', $rental->id)->first();
+
+            $user = $rent_building->user;
+
+            $building = $rent_building->building;
+
+            $status = 'success';
+
+            if ($total_payment < $rental->cost) {
+                $status = "pending";
+            }
+
+            $rental->update([
+                'payment_data' => $payment_data,
+                'payment_method' => $payment_method,
+                'payment_date' => Carbon::now(),
+                'total_payment' => $total_payment,
+                'status' => $status,
+            ]);
+
+            return ResponseFormatter::success([
+                'title' =>  'Transaksi Pembayaran Penyewaan Gedung',
+                'item' => $building->name,
+                'item_desc' => $building->description,
+                'item_cost' => $building->price,
+                'adm_fee' => $adm_fee,
+                'penalty' => $penalty,
+                'total_payment' => $total_payment,
+                'actual_cost' => $rental->cost,
+                'customer_name' => $user->name,
+            ], 'Pembayaran berhasil di lakukan');
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error([], $th->getMessage());
+        }
     }
 
     public function api_rent_building(Request $request)
@@ -120,7 +165,17 @@ class BuildingController extends Controller
     }
 
     public function api_get_building_by_id(Request $request)
-    { }
+    {
+        try {
+            $building_id = $request->id;
+
+            $building = Building::findOrFail($building_id);
+
+            return ResponseFormatter::success($building, "Berhasil mendapatkan data gedung");
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error([], $th->getMessage());
+        }
+    }
 
     public function api_get_all_buildings()
     {
@@ -137,6 +192,7 @@ class BuildingController extends Controller
     protected function api_rent(Request $request, User $user, Building $building): Rental
     {
         $date_string = $request->end_date;
+        $adm_fee = 0;
 
         if (empty($date_string))
             throw new \Exception("Harap tentukan tanggal ahkir penyewaan");
@@ -149,9 +205,9 @@ class BuildingController extends Controller
 
         $start_date = Carbon::now();
         $end_date = $carbon_date;
-        $duration = $end_date->diffInDays($start_date);
+        $duration = $end_date->diffInDays($start_date) + 1;
 
-        if($end_date->isPast())
+        if ($end_date->isPast())
             throw new \Exception('Tanggal jatuh tempo tidak boleh melewati hari ini');
 
         if ($duration >= 30)
@@ -161,7 +217,7 @@ class BuildingController extends Controller
             'start_date' => $start_date,
             'end_date' => $end_date,
             'duration' => $duration,
-            'cost' => $building->price * $duration,
+            'cost' => $building->price * $duration + $adm_fee,
             'note' => $request->note ?? "",
             'customer_id' => $user->id,
             'status' => 'rented',
