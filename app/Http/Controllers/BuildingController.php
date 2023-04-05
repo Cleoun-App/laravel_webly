@@ -32,6 +32,12 @@ class BuildingController extends Controller
             $user_id = $request->user_id;
             $building_id = $request->building_id;
 
+            $is_rented = RentBuilding::isBuildingRented($building_id);
+
+            if($is_rented) {
+                throw new \Exception('Gedung sudah di-sewakan');
+            }
+
             if (empty($user_id) || empty($building_id)) {
                 throw new \Exception('Harap masukan id user dan id gedung');
             }
@@ -51,6 +57,26 @@ class BuildingController extends Controller
             $rent_data->rent = $rental;
 
             return ResponseFormatter::success($rent_data, 'Gedung berhasil di-sewa');
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error([], $th->getMessage());
+        }
+    }
+
+    public function api_delete_rented_building($rb_id)
+    {
+        try {
+
+            $rent_building = RentBuilding::findOrFail($rb_id);
+
+            $trx_data = $rent_building->rent;
+
+            $rent_building->delete();
+
+            if ($trx_data instanceof Rental) {
+                $trx_data->delete();
+            }
+
+            return ResponseFormatter::success([], "Data dengan parameter '$rb_id' berhasil di hapus");
         } catch (\Throwable $th) {
             return ResponseFormatter::error([], $th->getMessage());
         }

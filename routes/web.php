@@ -6,7 +6,6 @@ use App\Models\Masters\Canteen;
 use App\Models\Masters\Car;
 use App\Models\Masters\Driver;
 use Illuminate\Support\Carbon;
-use App\Models\Administrations\RentBuilding;
 
 /*
 |--------------------------------------------------------------------------

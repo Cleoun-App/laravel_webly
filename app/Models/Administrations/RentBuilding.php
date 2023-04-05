@@ -28,4 +28,13 @@ class RentBuilding extends Model
     {
         return $this->belongsTo(Building::class, 'building_id');
     }
+
+    public function scopeIsBuildingRented($_, $building_id) : bool
+    {
+        $result = RentBuilding::where('building_id', $building_id)->first();
+
+        if ($result == false) return false;
+
+        return true;
+    }
 }

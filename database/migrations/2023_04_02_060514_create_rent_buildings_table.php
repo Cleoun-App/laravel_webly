@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('rent_buildings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rent_id');
-            $table->foreignId('building_id');
+            $table->foreignId('rent_id')->unique();
+            $table->foreignId('building_id')->unique();
             $table->timestamps();
 
             $table->foreign('rent_id')->on('trx_rentals')->references('id');
