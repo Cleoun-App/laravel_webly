@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\CarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,4 +96,63 @@ Route::middleware('auth:sanctum')->group(function () {
      */
 
 
+    /**
+     *  --------------------------------------
+     *            START - RENTCAR
+     *  --------------------------------------
+     */
+
+
+    /**
+     *  METHOD GET
+     *  URL PARAMETER
+     *      id
+     *
+     *  Untuk mendapatkan data master mobil berdasarkan id mobil
+     */
+    Route::get('/master/get/car/{id}', [CarController::class, 'api_get_car_by_id']);
+
+    /**
+     *  METHOD GET
+     *
+     *  Untuk mendapatkan semua data master mobil
+     */
+    Route::get('/master/cars', [CarController::class, 'api_get_all_car']);
+
+    /**
+     *  METHOD GET
+     *
+     *  Untuk mendapatkan semua data master driver yang tersedia/tidak disewa
+     */
+    Route::get('/master/available/drivers', [CarController::class, 'api_get_all_available_cars']);
+
+
+    /**
+     *  METHOD GET
+     *  URL PARAMETER
+     *      id
+     *
+     *  Untuk mendapatkan data master driver berdasarkan id
+     */
+    Route::get('/master/get/driver/{id}', [CarController::class, 'api_get_driver_by_id']);
+
+    /**
+     *  METHOD GET
+     *
+     *  Untuk mendapatkan semua data master driver
+     */
+    Route::get('/master/drivers', [CarController::class, 'api_get_all_driver']);
+
+    /**
+     *  METHOD GET
+     *
+     *  Untuk mendapatkan semua data master driver yang tersedia/tidak disewa
+     */
+    Route::get('/master/available/drivers', [CarController::class, 'api_get_all_available_driver']);
+
+    /**
+     *  --------------------------------------
+     *            END - RENTCAR
+     *  --------------------------------------
+     */
 });

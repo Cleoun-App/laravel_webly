@@ -20,7 +20,7 @@ class BuildingController extends Controller
      *  -------------------------------------------------
      */
 
-    public function api_get_rent_by_param(Request $request)
+    public function api_get_rent_by_param(Request $request) 
     {
         try {
 

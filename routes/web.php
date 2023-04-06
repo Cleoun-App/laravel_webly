@@ -18,11 +18,11 @@ use Illuminate\Support\Carbon;
 |
 */
 
-// Route::get('/', function () {
-//     $data = RentBuilding::find(1);
+Route::get('/', function () {
+    $data = Driver::find(1);
 
-//     dd($data);
-// });
+    dd($data->rent_car);
+});
 
 Route::get('/generate-data', function () {
 

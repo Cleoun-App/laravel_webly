@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('rent_cars', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
             $table->foreignId('rent_id');
-            $table->foreignId('car_id');
+            $table->foreignId('car_id')->unique();
+            $table->foreignId('driver_id')->unique();
             $table->timestamps();
 
+            $table->foreign('user_id')->on('users')->references('id');
+            $table->foreign('driver_id')->on('master_drivers')->references('id');
             $table->foreign('rent_id')->on('trx_rentals')->references('id');
             $table->foreign('car_id')->on('master_cars')->references('id');
         });
