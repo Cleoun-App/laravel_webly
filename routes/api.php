@@ -102,6 +102,24 @@ Route::middleware('auth:sanctum')->group(function () {
      *  --------------------------------------
      */
 
+    /**
+     *  METHOD POST
+     *  BODY PARAMETER:
+     *      user_id, car_id, driver_id,
+     *      adm_fee(optional), end_date(ahkir sewa), note
+     *
+     *  Untuk menyewakan mobil
+     */
+    Route::post('/rent/car', [CarController::class, 'api_rent_car']);
+
+    /**
+     *  METHOD GET
+     *  URL PARAMETER:
+     *      field(cuman menerima param user,building,rental), id
+     *
+     *  Untuk mendapatkan data gedung yang di-sewa dengan parameter yang di berikan
+     */
+    Route::get('/get/rented/building/{field}/{id}', [BuildingController::class, 'api_get_rent_by_param']);
 
     /**
      *  METHOD GET
@@ -124,7 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
      *
      *  Untuk mendapatkan semua data master driver yang tersedia/tidak disewa
      */
-    Route::get('/master/available/drivers', [CarController::class, 'api_get_all_available_cars']);
+    Route::get('/master/available/cars', [CarController::class, 'api_get_all_available_cars']);
 
 
     /**

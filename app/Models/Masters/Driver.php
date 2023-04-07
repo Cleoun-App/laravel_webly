@@ -23,4 +23,15 @@ class Driver extends Model
     {
         return $this->hasOne(RentCar::class, 'driver_id');
     }
+
+    public function isFree()
+    {
+        $rent_car = $this->rent_car;
+
+        if ($rent_car instanceof RentCar) {
+            return false;
+        }
+
+        return true;
+    }
 }
