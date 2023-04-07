@@ -115,6 +115,15 @@ Route::middleware('auth:sanctum')->group(function () {
     /**
      *  METHOD GET
      *  URL PARAMETER:
+     *      field(cuman menerima param user,car,rental), id
+     *
+     *  Untuk mendapatkan data mobil yang di-sewa dengan parameter yang di berikan
+     */
+    Route::get('/get/rented/cars/{field}/{id}', [CarController::class, 'api_get_rent_by_param']);
+
+    /**
+     *  METHOD GET
+     *  URL PARAMETER:
      *      field(cuman menerima param user,building,rental), id
      *
      *  Untuk mendapatkan data gedung yang di-sewa dengan parameter yang di berikan

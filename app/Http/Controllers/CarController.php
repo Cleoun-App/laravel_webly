@@ -14,6 +14,44 @@ class CarController extends Controller
     //
 
 
+
+    public function api_get_rent_by_param(Request $request)
+    {
+        try {
+
+            $field = \Str::upper($request->field);
+            $id = $request->id;
+
+            $where_clause = null;
+
+            switch ($field) {
+                case "USER":
+                    $where_clause = "user_id";
+                    break;
+                case "CAR":
+                    $where_clause = "car_id";
+                    break;
+                case "RENTAL":
+                    $where_clause = "rent_id";
+                    break;
+                default:
+                    throw new \Exception("Parameter '$field' yang anda masukan tidak ter-indentifikasi");
+                    break;
+            }
+
+            $result = RentCar::where([$where_clause => $id])->get();
+
+            if ($result === false or empty($result) or count($result) === 0)
+                throw new \Exception("Tidak ada data yang di dapatkan");
+
+            return ResponseFormatter::success($result, 'Berhasil mendapatkan data sewa gedung');
+
+            // ...
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error([], $th->getMessage());
+        }
+    }
+
     public function api_rent_car(Request $request)
     {
         try {
@@ -144,7 +182,7 @@ class CarController extends Controller
     public function api_get_all_available_driver(Request $request)
     {
         try {
-            $drivers = Driver::get();
+            $drivers = Driver::get()->all();
 
             $_drivers = [];
 
