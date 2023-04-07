@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     /**
      *  METHOD GET
      *  URL PARAMETER:
-     *      field(user,building,rental), id
+     *      field(cuman menerima param user,building,rental), id
      *
      *  Untuk mendapatkan data gedung yang di-sewa dengan parameter yang di berikan
      */
@@ -56,8 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     /**
      *  METHOD POST
      *  BODY PARAMETER:
-     *      payment_data, payment_method, rental_id, penalty
-     *      adm_fee, cost
+     *      payment_data(isinya json dari midtrans), payment_method, rental_id, penalty(denda keterlambatan)
+     *      adm_fee(biaya adminisitrasi), cost(biaya penyewaan tok)
      *
      *  Untuk membayar biaya/total sewa dari gedung
      */
