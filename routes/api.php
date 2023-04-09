@@ -183,8 +183,27 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-     Route::post('/payment/success', [RentContrller::class, 'api_on_payment_success']);
+    /**
+     *  --------------------------------------
+     *            START - RENTTENANT
+     *  --------------------------------------
+     */
 
-     Route::post('/payment/failed', [RentContrller::class, 'api_on_payment_failed']);
+    /**
+     *  METHOD GET
+     *
+     *  Untuk mendapatkan semua data master driver yang tersedia/tidak disewa
+     */
+    Route::get('/master/available/tenants', [CarController::class, 'api_get_all_available_driver']);
 
+    /**
+     *  --------------------------------------
+     *            END - RENTTENANT
+     *  --------------------------------------
+     */
+
+
+    Route::post('/payment/success', [RentContrller::class, 'api_on_payment_success']);
+
+    Route::post('/payment/failed', [RentContrller::class, 'api_on_payment_failed']);
 });
