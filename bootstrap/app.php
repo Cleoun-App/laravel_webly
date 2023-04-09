@@ -11,6 +11,8 @@
 |
 */
 
+// my code goes here
+
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
@@ -51,5 +53,7 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
+
+require base_path() . "\\vendor\midtrans\midtrans-php\midtrans.php";
 
 return $app;

@@ -14,7 +14,6 @@ class CarController extends Controller
     //
 
 
-
     public function api_get_rent_by_param(Request $request)
     {
         try {

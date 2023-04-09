@@ -25,6 +25,7 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'expires_in' => config('sanctum.expiration'),
+                'user' => $user,
             ], 'Login Berhasil');
         } else {
             return ResponseFormatter::error([

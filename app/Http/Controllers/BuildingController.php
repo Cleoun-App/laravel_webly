@@ -57,14 +57,18 @@ class BuildingController extends Controller
         }
     }
 
+
+    /**
+     *  @deprecated
+     */
     public function api_pay_rent(Request $request)
     {
         try {
             $payment_data = $request->payment_data;
             $payment_method = $request->payment_method;
             $rental_id = $request->rental_id;
-            $penalty = $request->penalty;
-            $adm_fee = $request->adm_fee;
+            $penalty = $request->penalty ?? 0;
+            $adm_fee = $request->adm_fee ?? 0;
             $cost = $request->cost;
 
             $total_payment = $cost + $adm_fee + $penalty;
@@ -189,4 +193,23 @@ class BuildingController extends Controller
         }
     }
 
+    public function api_get_all_available_buildings()
+    {
+        try {
+            $buildings = Building::get()->all();
+
+            $_buildings = [];
+
+            foreach ($buildings as $building) {
+                if ($building->rent instanceof RentBuilding === false) {
+                    $_buildings[] = $building;
+                }
+            }
+
+            return ResponseFormatter::success($_buildings, 'Data gedung berhasil di dapatkan');
+        } catch (\Throwable $th) {
+
+            return ResponseFormatter::error([], $th->getMessage());
+        }
+    }
 }

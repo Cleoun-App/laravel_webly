@@ -10,10 +10,9 @@ use Illuminate\Foundation\Auth\User;
 class RentContrller extends Controller
 {
 
-    public static function api_rent(Request $request, User $user, $item_cost): Rental
+    public static function api_rent(Request $request, User $user, $total_cost): Rental
     {
         $date_string = $request->end_date;
-        $adm_fee = $request->adm_fee ?? 0;
 
         if (empty($date_string))
             throw new \Exception("Harap tentukan tanggal ahkir penyewaan");
@@ -38,12 +37,43 @@ class RentContrller extends Controller
             'start_date' => $start_date,
             'end_date' => $end_date,
             'duration' => $duration,
-            'cost' => $item_cost * $duration + $adm_fee,
+            'cost' => $total_cost,
             'note' => $request->note ?? "",
             'customer_id' => $user->id,
-            'status' => 'rented',
+            'status' => 'waiting', // waiting for payment
+            'waiting_end' => $start_date->addHours(6),
         ]);
 
         return $rental;
+    }
+
+
+    public static function api_on_payment_success()
+    {
+        try {
+            \Midtrans\Config::$isProduction = false;
+            \Midtrans\Config::$serverKey = config('midtrans.server_key');
+
+            $notif = new \Midtrans\Notification();
+
+            $rental_id = $notif->rental_id;
+
+            $rental = Rental::findOrFail($rental_id);
+
+            $rent_building = RentBuilding::where('rent_id', $rental->id)->first();
+
+            $rental->update([
+                'payment_date' => Carbon::now(),
+                'payment_method'=> $notif->payment_type,
+                'total_payment' => $notif->gross_amount,
+                'status' => "pending",
+            ]);
+
+            return ResponseFormatter::success([], 'Pembayaran berhasil di lakukan');
+
+            // ...
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error([], $th->getMessage());
+        }
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\RentContrller;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,16 +55,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/get/rented/building/{field}/{id}', [BuildingController::class, 'api_get_rent_by_param']);
 
     /**
-     *  METHOD POST
-     *  BODY PARAMETER:
-     *      payment_data(isinya json dari midtrans), payment_method, rental_id, penalty(denda keterlambatan)
-     *      adm_fee(biaya adminisitrasi), cost(biaya penyewaan tok)
-     *
-     *  Untuk membayar biaya/total sewa dari gedung
-     */
-    Route::post('/pay/rent/building', [BuildingController::class, 'api_pay_rent']);
-
-    /**
      *  METHOD DELETE
      *  URL PARAMETER:
      *      id
@@ -87,6 +78,13 @@ Route::middleware('auth:sanctum')->group(function () {
      *  Untuk mendapatkan semua data master gedung
      */
     Route::get('/master/buildings', [BuildingController::class, 'api_get_all_buildings']);
+
+    /**
+     *  METHOD GET
+     *
+     *  Untuk mendapatkan semua data master gedung yang tersedia/tidak disewa
+     */
+    Route::get('/master/available/buildings', [BuildingController::class, 'api_get_all_available_buildings']);
 
 
     /**
@@ -182,4 +180,11 @@ Route::middleware('auth:sanctum')->group(function () {
      *            END - RENTCAR
      *  --------------------------------------
      */
+
+
+
+     Route::post('/payment/success', [RentContrller::class, 'api_on_payment_success']);
+
+     Route::post('/payment/failed', [RentContrller::class, 'api_on_payment_failed']);
+
 });
