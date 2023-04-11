@@ -48,19 +48,22 @@ class RentContrller extends Controller
     }
 
 
-    public static function api_on_payment_success()
+    public function api_on_payment_success(Request $request)
     {
         try {
+
             \Midtrans\Config::$isProduction = false;
             \Midtrans\Config::$serverKey = config('midtrans.server_key');
 
             $notif = new \Midtrans\Notification();
 
-            $rental_id = $notif->rental_id;
+            $model = $notif->model;
+            $model_id = $notif->model_id;
+            $rent_id = $notif->rent_id;
 
-            $rental = Rental::findOrFail($rental_id);
+            $rental = Rental::findOrFail($rent_id);
 
-            $rent_building = RentBuilding::where('rent_id', $rental->id)->first();
+            $rent_building = $model::where('rent_id', $rental->id)->first();
 
             $rental->update([
                 'payment_date' => Carbon::now(),
