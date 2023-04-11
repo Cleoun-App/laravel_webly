@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('rent_canteens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('rent_id');
-            $table->foreignId('canteen_id');
+            $table->foreignId('user_id');
+            $table->foreignId('rent_id')->unique();
+            $table->foreignId('canteen_id')->unique();
             $table->timestamps();
 
+
+            $table->foreign('user_id')->on('users')->references('id');
             $table->foreign('rent_id')->on('trx_rentals')->references('id');
             $table->foreign('canteen_id')->on('master_canteens')->references('id');
         });

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\RentContrller;
+use App\Http\Controllers\CanteenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +127,7 @@ Route::middleware('auth:sanctum')->group(function () {
      *
      *  Untuk mendapatkan data gedung yang di-sewa dengan parameter yang di berikan
      */
-    Route::get('/get/rented/building/{field}/{id}', [BuildingController::class, 'api_get_rent_by_param']);
+    Route::get('/get/rented/car/{field}/{id}', [CarController::class, 'api_get_rent_by_param']);
 
     /**
      *  METHOD GET
@@ -181,7 +182,22 @@ Route::middleware('auth:sanctum')->group(function () {
      *  --------------------------------------
      */
 
+    /**
+     *  METHOD POST
+     *  BODY PARAMETER:
+     *      user_id, canteen_id, driver_id,
+     *      adm_fee(optional), end_date(ahkir sewa), note
+     *
+     *  Untuk menyewakan canteen
+     */
+    Route::post('/rent/canteen', [CanteenController::class, 'api_rent_canteen']);
 
+    /**
+     *  METHOD GET
+     *
+     *  Untuk mendapatkan semua data master kantin yang tersedia/tidak disewa
+     */
+    Route::get('/master/available/canteens', [CanteenController::class, 'api_get_all_available_canteens']);
 
     /**
      *  --------------------------------------
