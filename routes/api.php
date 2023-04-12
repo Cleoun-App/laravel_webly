@@ -122,15 +122,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /**
      *  METHOD GET
-     *  URL PARAMETER:
-     *      field(cuman menerima param user,building,rental), id
-     *
-     *  Untuk mendapatkan data gedung yang di-sewa dengan parameter yang di berikan
-     */
-    Route::get('/get/rented/car/{field}/{id}', [CarController::class, 'api_get_rent_by_param']);
-
-    /**
-     *  METHOD GET
      *  URL PARAMETER
      *      id
      *
@@ -182,6 +173,14 @@ Route::middleware('auth:sanctum')->group(function () {
      *  --------------------------------------
      */
 
+
+    /**
+     *  --------------------------------------
+     *            START - RENTTENANT
+     *  --------------------------------------
+     */
+
+
     /**
      *  METHOD POST
      *  BODY PARAMETER:
@@ -192,25 +191,22 @@ Route::middleware('auth:sanctum')->group(function () {
      */
     Route::post('/rent/canteen', [CanteenController::class, 'api_rent_canteen']);
 
+
+    /**
+     *  METHOD GET
+     *  URL PARAMETER:
+     *      field(cuman menerima param user,canteen,rental), id
+     *
+     *  Untuk mendapatkan data kantin yang di-sewa dengan parameter yang di berikan
+     */
+    Route::get('/get/rented/canteens/{field}/{id}', [CanteenController::class, 'api_get_rent_by_param']);
+
     /**
      *  METHOD GET
      *
      *  Untuk mendapatkan semua data master kantin yang tersedia/tidak disewa
      */
     Route::get('/master/available/canteens', [CanteenController::class, 'api_get_all_available_canteens']);
-
-    /**
-     *  --------------------------------------
-     *            START - RENTTENANT
-     *  --------------------------------------
-     */
-
-    /**
-     *  METHOD GET
-     *
-     *  Untuk mendapatkan semua data master driver yang tersedia/tidak disewa
-     */
-    Route::get('/master/available/tenants', [CarController::class, 'api_get_all_available_driver']);
 
     /**
      *  --------------------------------------
