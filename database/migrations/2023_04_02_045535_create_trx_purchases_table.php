@@ -16,15 +16,15 @@ return new class extends Migration
             $table->foreignId('customer_id');
             $table->string('name');
             $table->string('slug')->unique();
-            $table->dateTime('purchase_date');
-            $table->decimal('total_cost');
+            $table->integer('total_cost');
+            $table->tinyText('note')->nullable();
+            $table->smallInteger('discount')->nullable();
+            $table->enum('status', ['pending', 'failed', 'success', 'waiting', 'rented']);
+            $table->integer('total_payment')->nullable();
+            $table->json('payment_data')->nullable();
             $table->string('payment_method')->nullable();
             $table->dateTime('payment_date')->nullable();
-            $table->smallInteger('discount')->nullable();
-            $table->tinyText('note')->nullable();
-            $table->string('model_id');
-            $table->string('model_type');
-            $table->enum('status', ['pending', 'waiting', 'success', 'failed', 'shipping']);
+            $table->dateTime('exp_date');
             $table->timestamps();
 
             $table->foreign('customer_id')->on('users')->references('id');

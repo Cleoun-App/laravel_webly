@@ -9,5 +9,5 @@ class CertValidation extends Model
 {
     use HasFactory;
 
-    protected $table = "";
+    protected $table = "cert_validation";
 }

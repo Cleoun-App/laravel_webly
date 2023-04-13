@@ -12,8 +12,8 @@ class Purchase extends Model
     protected $table = 'trx_purchases';
 
     protected $fillable = [
-        'name', 'slug', 'purchase_date', 'total_cost',
+        'name', 'slug', 'total_cost', 'payment_data',
         'payment_method', 'payment_date', 'discount',
-        'note', 'model_id', 'model_type', 'status'
+        'note', 'exp_date', 'status'
     ];
 }

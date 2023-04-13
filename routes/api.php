@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\RentContrller;
 use App\Http\Controllers\CanteenController;
+use App\Http\Controllers\CertController;
 
 /*
 |--------------------------------------------------------------------------
@@ -213,6 +214,21 @@ Route::middleware('auth:sanctum')->group(function () {
      *            END - RENTTENANT
      *  --------------------------------------
      */
+
+    /**
+     *  --------------------------------------
+     *           START - PAY IJAZAH
+     *  --------------------------------------
+     */
+
+     Route::get('/master/certificate/validation/purchase', [CertController::class, 'api_pay_cert_validation']);
+
+    /**
+     *  --------------------------------------
+     *            END - PAY IJAZAH
+     *  --------------------------------------
+     */
+
 
 
     Route::post('/payment/success', [RentContrller::class, 'api_on_payment_success']);
