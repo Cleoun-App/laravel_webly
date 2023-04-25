@@ -4,6 +4,7 @@ namespace App\Models\Masters;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Administrations\RentCanteen;
 
 class Canteen extends Model
 {
@@ -15,4 +16,9 @@ class Canteen extends Model
         'name', 'image', 'slug', 'size',
         'price', 'description',
     ];
+
+    public function rent_canteen()
+    {
+        return $this->hasOne(RentCanteen::class, 'canteen_id');
+    }
 }

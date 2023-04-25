@@ -86,7 +86,7 @@ class CanteenController extends Controller
             $rent_data->canteen = $canteen;
             $rent_data->rent = $rental;
 
-            return ResponseFormatter::success($rent_data, 'Mobil berhasil di-sewakan');
+            return ResponseFormatter::success($rent_data, 'Kantin berhasil di-sewakan');
         } catch (\Throwable $th) {
             return ResponseFormatter::error([], $th->getMessage());
         }
@@ -105,7 +105,7 @@ class CanteenController extends Controller
                 }
             }
 
-            return ResponseFormatter::success($_canteens, 'Data driver berhasil di dapatkan');
+            return ResponseFormatter::success($_canteens, 'Data kantin berhasil di dapatkan');
         } catch (\Throwable $th) {
 
             return ResponseFormatter::error([], $th->getMessage());

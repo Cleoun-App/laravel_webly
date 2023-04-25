@@ -221,14 +221,21 @@ Route::middleware('auth:sanctum')->group(function () {
      *  --------------------------------------
      */
 
-     Route::get('/master/certificate/validation/purchase', [CertController::class, 'api_pay_cert_validation']);
+
+    /**
+     *  METHOD POST
+     *  BODY PARAMETER:
+     *      user_id, cert_id, adm_fee(optional)
+     *
+     *  Untuk menyewakan canteen
+     */
+     Route::get('/certificate/validation/purchase', [CertController::class, 'api_pay_cert_validation']);
 
     /**
      *  --------------------------------------
      *            END - PAY IJAZAH
      *  --------------------------------------
      */
-
 
 
     Route::post('/payment/success', [RentContrller::class, 'api_on_payment_success']);

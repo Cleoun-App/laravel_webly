@@ -7,6 +7,7 @@ use App\Models\Masters\Car;
 use App\Models\Masters\Driver;
 use Illuminate\Support\Carbon;
 use function Illuminate\Filesystem\dirname;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +20,7 @@ use function Illuminate\Filesystem\dirname;
 |
 */
 
-Route::get('/', function () {
-});
+Route::get('/', function () { })->middleware('auth')->name('home');
 
 Route::get('/generate-data', function () {
 
@@ -31,3 +31,9 @@ Route::get('/generate-data', function () {
 
     dd($bf, $cf, $rf, $df);
 });
+
+
+Route::get('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
+Route::post('/login', [AuthController::class, 'attempt_login'])->middleware('guest');
+
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
