@@ -13,8 +13,16 @@ class AuthController extends Controller
         return view('auth.auth_login');
     }
 
+
+    /**
+     *  Logiin attemption function
+     *
+     *  @param \Illuminate\Http\Request $request
+     */
     public function attempt_login(Request $request)
     {
+
+        // Data validation
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -22,13 +30,20 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        // if success redirect to the main page with flash messsage
         if (Auth::attempt($credentials)) {
-            return redirect()->route('home')->with('success', 'Login Berhasil');
+            return redirect()->route('dashboard.index')->with('success', 'Login Berhasil');
         } else {
             return redirect()->route('login')->with('error', 'Pastikan username dan password sesuai!!');
         }
     }
 
+
+    /**
+     *  Logout function
+     *
+     *  @return void
+     */
     public function logout()
     {
         auth()->logout();

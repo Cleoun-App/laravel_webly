@@ -8,6 +8,7 @@ use App\Models\Masters\Driver;
 use Illuminate\Support\Carbon;
 use function Illuminate\Filesystem\dirname;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Dashboard\HomePageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,3 +38,15 @@ Route::get('/login', [AuthController::class, 'login'])->middleware('guest')->nam
 Route::post('/login', [AuthController::class, 'attempt_login'])->middleware('guest');
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+Route::middleware('auth')->prefix('/dashboard')->group(function () {
+
+    Route::get('/index', [HomePageController::class, 'index'])->name('dashboard.index');
+
+
+
+
+
+
+});

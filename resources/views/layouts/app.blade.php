@@ -807,6 +807,7 @@
 
     <!-- Chart And Analytic -->
     <script>
+        // function execution wrapper
         (function() {
             var ctx = document.getElementById("chart-bars").getContext("2d");
 
