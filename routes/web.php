@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use function Illuminate\Filesystem\dirname;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\HomePageController;
+use App\Http\Controllers\Dashboard\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +46,8 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/index', [HomePageController::class, 'index'])->name('dashboard.index');
 
 
-
+    Route::get('/add/user', [UserController::class, 'addUserPage'])->name('addUserPage');
+    Route::post('/add/user', [UserController::class, 'addUser']);
 
 
 
