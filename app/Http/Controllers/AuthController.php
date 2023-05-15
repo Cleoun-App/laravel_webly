@@ -15,7 +15,7 @@ class AuthController extends Controller
 
 
     /**
-     *  Logiin attemption function
+     *  Login attemption
      *
      *  @param \Illuminate\Http\Request $request
      */

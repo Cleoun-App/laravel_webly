@@ -16,7 +16,11 @@ class HomePageController extends Controller
 
             $user = auth()->user();
 
-            return view();
+
+            $data['user'] = $user;
+            $data['page_title'] = "Halam Utama";
+
+            return view('dashboard.ds-index-page', $data);
         } catch (\Throwable $th) {
             throw $th;
         }
