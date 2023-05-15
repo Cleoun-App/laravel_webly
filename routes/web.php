@@ -47,7 +47,7 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
 
     Route::get('/add/user', [UserController::class, 'addUserPage'])->name('addUserPage');
-    Route::post('/add/user', [UserController::class, 'addUser']);
+    Route::post('/add/user', [UserController::class, 'addUser'])->name('postUserData');
 
 
 

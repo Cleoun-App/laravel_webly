@@ -96,7 +96,7 @@
                     <div class="collapse " id="pagesExamples">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link " href="/new_user.php">
+                                <a class="nav-link " href="{{ route('addUserPage') }}">
                                     <span class="sidenav-mini-icon"> TS </span>
                                     <span class="sidenav-normal"> Tambahkan User </span>
                                 </a>

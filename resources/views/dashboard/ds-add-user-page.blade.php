@@ -26,7 +26,9 @@
                 <!--form panels-->
                 <div class="row">
                     <div class="col-12 col-lg-8 m-auto">
-                        <form class="multisteps-form__form mb-8">
+                        <form class="multisteps-form__form mb-8" action="{{ route('postUserData') }}" method="POST">
+                            @method('POST')
+                            @csrf
                             <!--single form panel-->
                             <div class="card multisteps-form__panel p-3 border-radius-xl bg-white js-active" data-animation="FadeIn">
                                 <h5 class="font-weight-bolder mb-0">Tentang Saya</h5>
@@ -35,31 +37,31 @@
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-6">
                                             <label>Nama Lenkap</label>
-                                            <input class="multisteps-form__input form-control" type="text" placeholder="eg. Michael" />
+                                            <input class="multisteps-form__input form-control" type="text" placeholder="eg. Michael" name="nama_lenkap" />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                                             <label>Nama Pengguna</label>
-                                            <input class="multisteps-form__input form-control" type="text" placeholder="eg. Prior" />
+                                            <input class="multisteps-form__input form-control" type="text" placeholder="eg. Prior" name="nama_pengguna/>
                                         </div>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-6">
                                             <label>Nomor Telepon</label>
-                                            <input class="multisteps-form__input form-control" type="text" placeholder="eg. Creative Tim" />
+                                            <input class="multisteps-form__input form-control" type="text" placeholder="eg. Creative Tim" name="nomor_telp/>
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                                             <label>Alamat Email</label>
-                                            <input class="multisteps-form__input form-control" type="email" placeholder="eg. soft@dashboard.com" />
+                                            <input class="multisteps-form__input form-control" type="email" placeholder="eg. soft@dashboard.com" name="email" />
                                         </div>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-6">
                                             <label>Katasandi</label>
-                                            <input class="multisteps-form__input form-control" type="password" placeholder="******" />
+                                            <input class="multisteps-form__input form-control" type="password" placeholder="******" name="password/>
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                                             <label>Konfirmasi Katasandi</label>
-                                            <input class="multisteps-form__input form-control" type="password" placeholder="******" />
+                                            <input class="multisteps-form__input form-control" type="password" placeholder="******" name="password_confirm"/>
                                         </div>
                                     </div>
                                     <div class="button-row d-flex mt-4">

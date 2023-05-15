@@ -10,6 +10,16 @@ class UserController extends Controller
 {
     //
 
+    public function addUserPage(Request $request)
+    {
+
+        $data['page_title'] = "Add User Page";
+
+        $data['user'] = auth()->user();
+
+        return view('dashboard.ds-add-user-page', $data);
+    }
+
     public function addUser(Request $req)
     {
         try {
