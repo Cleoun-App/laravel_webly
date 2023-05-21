@@ -102,7 +102,7 @@
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link " href="/user_table.php">
+                                <a class="nav-link " href="{{ route('usersTable') }}">
                                     <span class="sidenav-mini-icon"> TU </span>
                                     <span class="sidenav-normal"> Tabel Pengguna </span>
                                 </a>
@@ -133,19 +133,19 @@
                     <div class="collapse " id="applicationsExamples">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link " href="/user_profile.php">
+                                <a class="nav-link " href="{{ route('profilePage') }}">
                                     <span class="sidenav-mini-icon"> P </span>
                                     <span class="sidenav-normal"> Profile </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link " href="/user_profile.php">
+                                <a class="nav-link " href="{{ route('changePasswordPage') }}">
                                     <span class="sidenav-mini-icon"> C </span>
                                     <span class="sidenav-normal"> Ubah Password </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link " href="/user_profile.php">
+                                <a class="nav-link " href="{{ route('profileConfigPage') }}">
                                     <span class="sidenav-mini-icon"> S </span>
                                     <span class="sidenav-normal"> Pengaturan </span>
                                 </a>
@@ -453,13 +453,13 @@
                     <div class="collapse " id="master_gedung">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="/master_pendaftaran.php">
+                                <a class="nav-link" href="{{ route('addBuildingPage') }}">
                                     <span class="sidenav-mini-icon"> PG </span>
                                     <span class="sidenav-normal"> Pendaftaran Gedung </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/tabel_gedung.php">
+                                <a class="nav-link" href="{{ route('buildingTablePage') }}">
                                     <span class="sidenav-mini-icon"> TG </span>
                                     <span class="sidenav-normal"> Table Gedung </span>
                                 </a>
@@ -528,13 +528,13 @@
                     <div class="collapse " id="master_tenan">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ route('addCanteenPage') }}">
                                     <span class="sidenav-mini-icon"> PG </span>
                                     <span class="sidenav-normal"> Pendaftaran Tenan </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ route('canteenTablePage') }}">
                                     <span class="sidenav-mini-icon"> TG </span>
                                     <span class="sidenav-normal"> Table Tenan </span>
                                 </a>
@@ -627,7 +627,7 @@
                         <i class="ni ni-diamond text-dark text-gradient text-lg top-0" aria-hidden="true" id="sidenavCardIcon"></i>
                     </div>
                     <div class="docs-info">
-                        <a href="#" target="_blank" class="btn bg-gradient-danger btn-sm w-100 mb-0">Keluar</a>
+                        <a href="{{ route('logout') }}" class="btn bg-gradient-danger btn-sm w-100 mb-0">Keluar</a>
                     </div>
                 </div>
             </div>
@@ -658,9 +658,9 @@
                             </a>
                         </li>
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Default</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">{{ $page_title }}</li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Default</h6>
+                    <h6 class="font-weight-bolder mb-0">{{ $page_title }}</h6>
                 </nav>
                 <div class="sidenav-toggler sidenav-toggler-inner d-xl-block d-none ">
                     <a href="javascript:;" class="nav-link text-body p-0">
