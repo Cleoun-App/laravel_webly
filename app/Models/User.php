@@ -19,6 +19,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'username',
+        'nomor_telp',
+        'image',
+        'alamat_ktp',
+        'alamat_sekarang',
+        'kota',
+        'zip',
+        'sosmed',
         'name',
         'email',
         'password',
@@ -45,5 +53,9 @@ class User extends Authenticatable
 
     public function rent_building(Building $building) {
 
+    }
+
+    public function getPP() {
+        return $this->image == "" || $this->image == null ? '/default.png' : $this->image;
     }
 }

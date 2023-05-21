@@ -15,7 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('username', '20')->unique();
+            $table->string('nomor_telp')->unique()->nullable();
             $table->string('image')->nullable();
+            $table->string('alamat_ktp')->nullable();
+            $table->string('alamat_sekarang')->nullable();
+            $table->string('kota')->nullable();
+            $table->string('zip')->nullable();
+            $table->json('sosmed')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

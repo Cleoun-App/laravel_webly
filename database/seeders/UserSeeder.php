@@ -15,11 +15,23 @@ class UserSeeder extends Seeder
         $accounts = [
             [
                 'name' => 'admin',
+                'username' => 'admin',
+                'alamat_ktp' => fake()->address,
+                'alamat_sekarang' => fake()->address,
+                'kota' => fake()->city,
+                'zip' => fake()->numberBetween(1000, 9999),
+                'nomor_telp' => fake()->phoneNumber,
                 'email' => 'admin@mail.io',
                 'password' => Hash::make('password'),
             ],
             [
                 'name' => 'users',
+                'username' => 'users',
+                'alamat_ktp' => fake()->address,
+                'alamat_sekarang' => fake()->address,
+                'kota' => fake()->city,
+                'zip' => fake()->numberBetween(1000, 9999),
+                'nomor_telp' => fake()->phoneNumber,
                 'email' => 'user@mail.io',
                 'password' => Hash::make('password'),
             ]

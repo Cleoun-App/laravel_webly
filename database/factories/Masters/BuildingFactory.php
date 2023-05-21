@@ -17,26 +17,26 @@ class BuildingFactory extends Factory
         $faker = fake('ID');
 
         $nama_gedung = array(
-            "Gedung Merdeka",
-            "Gedung Sate",
-            "Gedung Kesenian Jakarta",
-            "Gedung Nasional Indonesia",
-            "Gedung Bank Indonesia",
-            "Gedung Pusat Perfilman H. Usmar Ismail",
-            "Gedung DPR/MPR RI",
-            "Gedung Kementerian Pendidikan dan Kebudayaan",
-            "Gedung Graha Merah Putih",
-            "Gedung Telkom Landmark Tower",
-            "Gedung Wisma 46",
-            "Gedung Menara BCA",
-            "Gedung Menara Standard Chartered",
-            "Gedung Bursa Efek Indonesia",
-            "Gedung WTC Jakarta",
-            "Gedung Plaza Indonesia",
-            "Gedung Pacific Place",
-            "Gedung Senayan City",
-            "Gedung The Plaza Office Tower",
-            "Gedung Wisma Nusantara"
+            "Merdeka",
+            "Sate",
+            "Kesenian Jakarta",
+            "Nasional Indonesia",
+            "Bank Indonesia",
+            "Pusat Perfilman H. Usmar Ismail",
+            "DPR/MPR RI",
+            "Kementerian Pendidikan dan Kebudayaan",
+            "Graha Merah Putih",
+            "Telkom Landmark Tower",
+            "Wisma 46",
+            "Menara BCA",
+            "Menara Standard Chartered",
+            "Bursa Efek Indonesia",
+            "WTC Jakarta",
+            "Plaza Indonesia",
+            "Pacific Place",
+            "Senayan City",
+            "The Plaza Office Tower",
+            "Wisma Nusantara"
         );
 
         return [

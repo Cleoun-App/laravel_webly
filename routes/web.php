@@ -10,6 +10,8 @@ use function Illuminate\Filesystem\dirname;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\HomePageController;
 use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\Master\BuildingController;
+use App\Http\Controllers\Dashboard\Master\CanteenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +43,13 @@ Route::post('/login', [AuthController::class, 'attempt_login'])->middleware('gue
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
+Route::get('/', function () {
+    return redirect()->route('dashboard.index');
+});
+
 Route::middleware('auth')->prefix('/dashboard')->group(function () {
+
+
 
     Route::get('/index', [HomePageController::class, 'index'])->name('dashboard.index');
 
@@ -49,6 +57,46 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/add/user', [UserController::class, 'addUserPage'])->name('addUserPage');
     Route::post('/add/user', [UserController::class, 'addUser'])->name('postUserData');
 
+    Route::get('/users/table', [UserController::class, 'usersTable'])->name('usersTable');
+
+    Route::get('/profile', [UserController::class, 'profilePage'])->name('profilePage');
+    Route::post('/profile', [UserController::class, 'updateUserData']);
+
+    Route::get('/profile/config', [UserController::class, 'profileConfigPage'])->name('profileConfigPage');
+    Route::post('/profile/config', [UserController::class, 'profileConfigPage']);
+
+    Route::get('/profile/change/password', [UserController::class, 'changePasswordPage'])->name('changePasswordPage');
+    Route::post('/profile/change/password', [UserController::class, 'changePassword']);
+
+
+    /**
+     *  Master Building
+     */
+
+    Route::get('/master/building/add', [BuildingController::class, 'addBuildingPage'])->name('addBuildingPage');
+    Route::post('/master/building/add', [BuildingController::class, 'addBuilding']);
+
+    Route::get('/master/building/table', [BuildingController::class, 'buildingTablePage'])->name('buildingTablePage');
+
+    Route::get('/master/building/edit/{id}', [BuildingController::class, 'editBuildingPage'])->name('editBuildingPage');
+    Route::post('/master/building/edit/{id}', [BuildingController::class, 'editBuilding']);
+
+    Route::get('/master/building/delete/{id}', [BuildingController::class, 'deleteBuilding'])->name('buildingDelete');
+
+
+    /**
+     *  Master Kantin
+     */
+
+    Route::get('/master/canteen/add', [CanteenController::class, 'addCanteenPage'])->name('addCanteenPage');
+    Route::post('/master/canteen/add', [CanteenController::class, 'addCanteen']);
+
+    Route::get('/master/canteen/table', [CanteenController::class, 'canteenTablePage'])->name('canteenTablePage');
+
+    Route::get('/master/canteen/edit/{id}', [CanteenController::class, 'editCanteenPage'])->name('editCanteenPage');
+    Route::post('/master/canteen/edit/{id}', [CanteenController::class, 'editCanteen']);
+
+    Route::get('/master/canteen/delete/{id}', [CanteenController::class, 'deleteCanteen'])->name('canteenDelete');
 
 
 });
