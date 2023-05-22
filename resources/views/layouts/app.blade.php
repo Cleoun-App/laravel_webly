@@ -565,13 +565,13 @@
                     <div class="collapse " id="master_pmobil">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ route('addCarPage') }}">
                                     <span class="sidenav-mini-icon"> PM </span>
                                     <span class="sidenav-normal"> Pendaftaran Mobil </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ route('carTablePage') }}">
                                     <span class="sidenav-mini-icon"> TM </span>
                                     <span class="sidenav-normal"> Table Mobil </span>
                                 </a>

@@ -12,6 +12,7 @@ use App\Http\Controllers\Dashboard\HomePageController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\Master\BuildingController;
 use App\Http\Controllers\Dashboard\Master\CanteenController;
+use App\Http\Controllers\Dashboard\Master\CarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,5 +99,19 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
     Route::get('/master/canteen/delete/{id}', [CanteenController::class, 'deleteCanteen'])->name('canteenDelete');
 
+
+    /**
+     *  Master Driver(car)
+     */
+
+    Route::get('/master/car/add', [CarController::class, 'addCarPage'])->name('addCarPage');
+    Route::post('/master/car/add', [CarController::class, 'addCar']);
+
+    Route::get('/master/car/table', [CarController::class, 'carTablePage'])->name('carTablePage');
+
+    Route::get('/master/car/edit/{id}', [CarController::class, 'editCarPage'])->name('editCarPage');
+    Route::post('/master/car/edit/{id}', [CarController::class, 'editCar']);
+
+    Route::get('/master/car/delete/{id}', [CarController::class, 'deleteCar'])->name('deleteCar');
 
 });
