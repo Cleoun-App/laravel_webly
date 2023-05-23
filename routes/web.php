@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\Master\BuildingController;
 use App\Http\Controllers\Dashboard\Master\CanteenController;
 use App\Http\Controllers\Dashboard\Master\CarController;
+use App\Http\Controllers\Dashboard\Master\DriverController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,5 +114,20 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::post('/master/car/edit/{id}', [CarController::class, 'editCar']);
 
     Route::get('/master/car/delete/{id}', [CarController::class, 'deleteCar'])->name('deleteCar');
+
+
+    /**
+     *  Master Driver
+     */
+
+    Route::get('/master/driver/add', [DriverController::class, 'addDriverPage'])->name('addDriverPage');
+    Route::post('/master/driver/add', [DriverController::class, 'addDriver']);
+
+    Route::get('/master/driver/edit/{id}', [DriverController::class, 'editDriverPage'])->name('editDriverPage');
+    Route::post('/master/driver/edit/{id}', [DriverController::class, 'editDriver']);
+
+    Route::get('/master/driver/delete/{id}', [DriverController::class, 'deleteDriver'])->name('deleteDriver');
+
+    Route::get('/master/driver/table', [DriverController::class, 'driverTablePage'])->name('driverTablePage');
 
 });

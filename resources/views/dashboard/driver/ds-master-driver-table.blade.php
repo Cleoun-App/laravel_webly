@@ -11,53 +11,52 @@
 <div class="container-fluid py-4">
 
     <div class="row mt-4">
-            <div class="col-lg-12 m-auto">
-                @if ($msg = session()->get('error'))
-                    <div class="alert alert-danger text-light" role="alert">
-                        <strong>Error!</strong> {{ $msg }}
-                    </div>
-                @endif
+        <div class="col-lg-12 m-auto">
+            @if ($msg = session()->get('error'))
+                <div class="alert alert-danger text-light" role="alert">
+                    <strong>Error!</strong> {{ $msg }}
+                </div>
+            @endif
 
-                @if ($msg = session()->get('success'))
-                    <div class="alert alert-success text-light" role="alert">
-                        <strong>Berhasil!</strong> {{ $msg }}
-                    </div>
-                @endif
-            </div>
+            @if ($msg = session()->get('success'))
+                <div class="alert alert-success text-light" role="alert">
+                    <strong>Berhasil!</strong> {{ $msg }}
+                </div>
+            @endif
         </div>
+    </div>
+
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
                 <!-- Card header -->
                 <div class="card-header pb-1">
-                    <h5 class="mb-0">Tabel Mobil</h5>
+                    <h5 class="mb-0">Tabel Driver</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-flush" id="datatable-search">
                         <thead class="thead-light">
                             <tr>
                                 <th>Nama</th>
-                                <th>Type</th>
-                                <th>Harga</th>
-                                <th>Km</th>
-                                <th>Nomor Polisi</th>
+                                <th>Tipe SIM</th>
+                                <th>Nomor Ponsel</th>
+                                <th>Alamat</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cars as $car)
+                            @foreach ($drivers as $driver)
                                 <tr>
-                                    <td class="text-sm font-weight-normal">{{ \Str::limit($car->name, 30, "...") }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $car->type }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $car->price }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $car->km }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $car->license_plate }}</td>
+                                    <td class="text-sm font-weight-normal">{{ \Str::limit($driver->name, 30, "...") }}</td>
+                                    <td class="text-sm font-weight-normal">{{ \Str::limit($driver->license, 30, "...") }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $driver->phone_number }}</td>
+                                    <td class="text-sm font-weight-normal">{{ \Str::limit($driver->address, 30, "...") }}</td>
                                     {{-- <td class="text-sm font-weight-normal">
                                         <span class="badge badge-sm bg-gradient-success">Aktif</span>
                                     </td> --}}
                                     <td class="text-sm font-weight-normal">
-                                        <a class="btn badge badge-success m-0" href="{{ route('editCarPage', $car->id) }}">Ubah</a>
-                                        <a class="btn badge badge-danger m-0" onclick="return confirm('Yakin!!, pilih ok untuk menghapus')" href="{{ route('deleteCar', $car->id) }}">Hapus</a>
+                                        <a class="btn badge badge-success m-0" href="{{ route('editDriverPage', $driver->id) }}">Ubah</a>
+                                        <a class="btn badge badge-danger m-0" onclick="return confirm('Yakin!!, pilih ok untuk menghapus')" href="{{ route('deleteDriver', $driver->id) }}">Hapus</a>
                                     </td>
                                 </tr>
                             @endforeach

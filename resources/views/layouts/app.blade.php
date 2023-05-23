@@ -191,7 +191,7 @@
                     <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder opacity-6">ADMINISTRATION PAGES</h6>
                 </li>
                 <li class="nav-item">
-                    <a data-bs-toggle="collapse" href="#pagesExamples" class="nav-link " aria-controls="pagesExamples" role="button" aria-expanded="false">
+                    <a data-bs-toggle="collapse" href="#building_rent" class="nav-link " aria-controls="building_rent" role="button" aria-expanded="false">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center  me-2">
                             <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                                 <title>office</title>
@@ -209,7 +209,7 @@
                         </div>
                         <span class="nav-link-text ms-1">Penyewaan Gedung</span>
                     </a>
-                    <div class="collapse " id="pagesExamples">
+                    <div class="collapse " id="building_rent">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
                                 <a class="nav-link" href="/add_penyewa.php">
@@ -574,6 +574,18 @@
                                 <a class="nav-link" href="{{ route('carTablePage') }}">
                                     <span class="sidenav-mini-icon"> TM </span>
                                     <span class="sidenav-normal"> Table Mobil </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="{{ route('addDriverPage') }}">
+                                    <span class="sidenav-mini-icon"> PM </span>
+                                    <span class="sidenav-normal"> Pendaftaran Supir </span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="{{ route('driverTablePage') }}">
+                                    <span class="sidenav-mini-icon"> TM </span>
+                                    <span class="sidenav-normal"> Table Supir </span>
                                 </a>
                             </li>
                         </ul>
