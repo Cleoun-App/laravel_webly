@@ -7,82 +7,46 @@
 
 <!-- Start Content -->
 
-
-<div class="container-fluid py-4">
-    <div class="row mt-4">
+<div class="container-fluid">
+    <div class="row">
         <div class="col-12">
-            <div class="card">
-                <!-- Card header -->
-                <div class="card-header pb-1">
-                    <h5 class="mb-0">Tabel Gedung</h5>
+            <div class="mb-2">
+               <!--progress bar-->
+               <div class="row">
+                    <div class="col-12 col-lg-8 mx-auto my-5">
+                        <div class="multisteps-form__progress">
+                            <button class="multisteps-form__progress-btn js-active" type="button" title="User Info" disabled>
+                                <span>Informasi pengguna</span>
+                            </button>
+                            <button class="multisteps-form__progress-btn" disabled type="button" title="Address">Alamat</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-flush" id="datatable-search">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Nama</th>
-                                <th>Kapasitas</th>
-                                <th>Harga</th>
-                                <th>Kategori</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($buildings as $building)
-                                <tr>
-                                    <td class="text-sm font-weight-normal">{{ \Str::limit($building->name, 40, "...") }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $building->capacity }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $building->price }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $building->category }}</td>
-                                    {{-- <td class="text-sm font-weight-normal">
-                                        <span class="badge badge-sm bg-gradient-success">Aktif</span>
-                                    </td> --}}
-                                    <td class="text-sm font-weight-normal">
-                                        <a class="btn badge badge-success m-0" href="{{ route('editBuildingPage', $building->id) }}">Ubah</a>
-                                        <a class="btn badge badge-danger m-0" onclick="return confirm('Yakin!!, pilih ok untuk menghapus')" href="{{ route('buildingDelete', $building->id) }}">Hapus</a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="row">
+                    <div class="col-lg-8 m-auto">
+                        @if ($msg = session()->get('error'))
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Error!</strong> {{ $msg }}
+                            </div>
+                        @endif
+
+                        @if ($msg = session()->get('success'))
+                            <div class="alert alert-success" role="alert">
+                                <strong>Berhasil!</strong> {{ $msg }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <!--form panels-->
+                <div class="row">
+                    <div class="col-12 col-lg-8 m-auto">
+                        @livewire('dashboard.rent-form')
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <footer class="footer pt-3  ">
-        <div class="container-fluid">
-            <div class="row align-items-center justify-content-lg-between">
-                <div class="col-lg-6 mb-lg-0 mb-4">
-                    <div class="copyright text-center text-sm text-muted text-lg-start">
-                        © <script>
-                            document.write(new Date().getFullYear())
-                        </script>,
-                        made with <i class="fa fa-heart"></i> by
-                        <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-                        for a better web.
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
 </div>
-
 <!-- End Content -->
 
 

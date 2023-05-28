@@ -9,6 +9,10 @@
     <title>
         {{ $page_title }}
     </title>
+
+    @livewireStyles
+    @livewireScripts
+
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
@@ -19,6 +23,12 @@
     <link href="/assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="/assets/css/soft-ui-dashboard.css?v=1.1.1" rel="stylesheet" />
+
+    <style>
+        main > div.container-fluid {
+            height: 90vh;
+        }
+    </style>
 </head>
 
 
@@ -212,7 +222,7 @@
                     <div class="collapse " id="building_rent">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="/add_penyewa.php">
+                                <a class="nav-link" href="{{ route('rent_building') }}">
                                     <span class="sidenav-mini-icon"> S </span>
                                     <span class="sidenav-normal"> Sewa Gedung </span>
                                 </a>
@@ -1129,6 +1139,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="/assets/js/soft-ui-dashboard.min.js?v=1.1.1"></script>
+
 </body>
 
 </html>

@@ -14,6 +14,7 @@ use App\Http\Controllers\Dashboard\Master\BuildingController;
 use App\Http\Controllers\Dashboard\Master\CanteenController;
 use App\Http\Controllers\Dashboard\Master\CarController;
 use App\Http\Controllers\Dashboard\Master\DriverController;
+use App\Http\Controllers\Dashboard\Admin\RentBuildingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -129,5 +130,13 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/master/driver/delete/{id}', [DriverController::class, 'deleteDriver'])->name('deleteDriver');
 
     Route::get('/master/driver/table', [DriverController::class, 'driverTablePage'])->name('driverTablePage');
+
+
+    /**
+     *  Administrasi
+     *
+     */
+
+     Route::get('/master/building/rent', [RentBuildingController::class, 'rentBuilding'] )->name('rent_building');
 
 });

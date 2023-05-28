@@ -4,6 +4,18 @@ use Illuminate\Support\Facades\Facade;
 
 return [
 
+
+    /**
+     *
+     *  Application payment
+     *
+     */
+
+    'adm_fee' => 0,
+
+    'tax_fee' => 0,
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Name

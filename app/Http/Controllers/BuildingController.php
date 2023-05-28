@@ -196,17 +196,9 @@ class BuildingController extends Controller
     public function api_get_all_available_buildings()
     {
         try {
-            $buildings = Building::get()->all();
+            $buildings = Building::getAvailableBuildings();
 
-            $_buildings = [];
-
-            foreach ($buildings as $building) {
-                if ($building->rent instanceof RentBuilding === false) {
-                    $_buildings[] = $building;
-                }
-            }
-
-            return ResponseFormatter::success($_buildings, 'Data gedung berhasil di dapatkan');
+            return ResponseFormatter::success($buildings, 'Data gedung berhasil di dapatkan');
         } catch (\Throwable $th) {
 
             return ResponseFormatter::error([], $th->getMessage());

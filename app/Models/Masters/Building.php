@@ -22,4 +22,26 @@ class Building extends Model
     {
         return $this->hasOne(RentBuilding::class, 'building_id');
     }
+
+    public function scopeGetAvailableBuildings($_)
+    {
+        $buildings = self::get()->all();
+
+        $_buildings = [];
+
+        foreach ($buildings as $building) {
+            if ($building->isFree()) {
+                $_buildings[] = $building;
+            }
+        }
+
+        return $_buildings;
+    }
+
+    public function isFree(): bool
+    {
+        if ($this->rent instanceof RentBuilding) return false;
+
+        return true;
+    }
 }
