@@ -12,7 +12,11 @@
                     <select class="form-control" wire:model="renter_id" id="choices-category">
                         <option default value="1298">Pilih Penyewa</option>
                         @foreach ($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @if ($renter_id === $user->id)
+                                <option value="{{ $user->id }}" checked>{{ $user->name }}</option>
+                            @else
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                     @error('renter_id')
@@ -49,6 +53,13 @@
                 </div>
             </div>
             <div class="row mt-2">
+                {{-- <div class="col-12">
+                    <label>Kode Promo</label>
+                    <input class="multisteps-form__input form-control" wire:model="promo_code" type="text" placeholder="Kode Promo" />
+                    @error('promo_code')
+                        <span style="color:#ff3131; font-size: 13px;">{{$message}}</span>
+                    @enderror
+                </div> --}}
                 <div class="col-12">
                     <label>Harga Gedung</label>
                     <input class="multisteps-form__input form-control disabled" disabled type="text" value="{{ $building_price }}" placeholder="Harga tenan" />
@@ -73,8 +84,18 @@
     </div>
     <!--single form panel-->
     <div class="card multisteps-form__panel p-3 border-radius-xl bg-white" data-animation="FadeIn">
-        <h5 class="font-weight-bolder">Detail Pembayaran</h5>
+        <h5 class="font-weight-bolder">Data Penyewaan</h5>
         <div class="multisteps-form__content">
+            <div class="row mt-3">
+                <div class="col-12 col-sm-6">
+                    <label>Nama Penyewa</label>
+                    <input class="multisteps-form__input form-control" type="text" value="{{ $renter?->name }}" disabled/>
+                </div>
+                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                    <label>Nomor Telpon</label>
+                    <input class="multisteps-form__input form-control" type="text" value="{{ $renter?->nomor_telp }}" disabled/>
+                </div>
+            </div>
             <div class="row mt-2">
                 <div class="col-12 col-sm-6">
                     <label>Durasi Penyewaan</label>
@@ -86,24 +107,18 @@
                 </div>
             </div>
             <div class="row mt-3">
-                <div class="col">
+                <div class="col-12 col-sm-6">
                     <label>Nama Penyewa</label>
                     <input class="multisteps-form__input form-control" type="text" value="{{ $renter?->name }}" disabled/>
                 </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-12 col-sm-6">
-                    <label>Kota Sekarang</label>
-                    <input class="multisteps-form__input form-control" type="text" placeholder="eg. Tokyo" name="kota" value="" />
-                </div>
-                <div class="col-6 col-sm-3 mt-3 mt-sm-0">
-                    <label>Zip</label>
-                    <input class="multisteps-form__input form-control" type="text" placeholder="7 letters" name="zip_code" value="" />
+                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                    <label>Nomor Telpon</label>
+                    <input class="multisteps-form__input form-control" type="text" value="{{ $renter?->nomor_telp }}" disabled/>
                 </div>
             </div>
             <div class="button-row d-flex mt-4">
                 <button class="btn bg-gradient-light mb-0 js-btn-prev" type="button" title="Prev">Sebelumnya</button>
-                <button class="btn bg-gradient-success ms-auto mb-0" type="submit">Simpan</button>
+                <button class="btn bg-gradient-success ms-auto mb-0" type="submit">Bayar</button>
             </div>
         </div>
     </div>

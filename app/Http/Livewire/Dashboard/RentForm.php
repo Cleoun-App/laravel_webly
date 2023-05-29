@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Dashboard;
 use Livewire\Component;
 use App\Models\Masters\Building;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class RentForm extends Component
 {
@@ -12,11 +13,50 @@ class RentForm extends Component
 
     public $can_next = false;
 
-    public $renter_id, $note, $building_id, $start_date, $end_date;
+    public $renter_id, $note, $building_id, $start_date, $end_date, $promo_code;
 
     public $duration, $total_payment, $status_payment, $payment_exp, $payment_detail = [];
 
     public $renter;
+
+    public function mount()
+    {
+        $this->fakeData();
+    }
+
+    private function fakeData()
+    {
+        $this->promo_code = "XNXX100";
+
+        $this->renter_id = 2;
+        $buildings = Building::getAvailableBuildings();
+
+        $building = $buildings[rand(0, count($buildings) - 1)];
+
+        $this->building_id = $building->id;
+        $this->building_price = "RP " .  number_format($building->price, 0, ',', '.');
+
+        $now = new Carbon();
+        $now_ = new Carbon();
+        $rand_end = rand(2, 16);
+
+        $start_date = $now->addDay(1);
+        $end_date = $now_->addDays($rand_end);
+
+        $this->start_date = $start_date->format('Y-m-d');
+        $this->end_date = $end_date->format('Y-m-d');
+
+        $duration = $this->hitungDurasi($start_date->format('Y-m-d'), $end_date->format('Y-m-d'));
+
+        $this->note = fake()->sentence;
+
+        $this->duration = $duration['format'];
+        $this->total_payment = $building->price * $duration['real'] + 0 + 0;
+
+        $this->renter = \App\Models\User::find($this->renter_id);
+
+        $this->can_next = true;
+    }
 
     public function rules()
     {
@@ -31,7 +71,6 @@ class RentForm extends Component
 
     public function render()
     {
-
         $data['buildings'] = Building::getAvailableBuildings();
         $data['users'] = \App\Models\User::all();
 
@@ -46,6 +85,12 @@ class RentForm extends Component
             $this->building_price = "RP " .  number_format($building->price, 0, ',', '.');
         } catch (\Throwable $th) {
             $this->building_price = 0;
+        }
+    }
+
+    public function updatedPromoCode($v) {
+        if($v != "AX10") {
+            $this->addError('promo_code', 'Kode Promo Tidak Tersedia');
         }
     }
 
@@ -151,10 +196,10 @@ class RentForm extends Component
         }
     }
 
-    private function hitungDurasi()
+    private function hitungDurasi($start_date = null, $end_date = null)
     {
-        $mulai = new \DateTime($this->start_date);
-        $akhir = new \DateTime($this->end_date);
+        $mulai = new \DateTime($start_date ?? $this->start_date);
+        $akhir = new \DateTime($end_date ?? $this->end_date);
 
         $durasi = $mulai->diff($akhir);
 

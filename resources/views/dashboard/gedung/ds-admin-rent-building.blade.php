@@ -15,10 +15,10 @@
                <div class="row">
                     <div class="col-12 col-lg-8 mx-auto my-5">
                         <div class="multisteps-form__progress">
-                            <button class="multisteps-form__progress-btn js-active" type="button" title="User Info" disabled>
-                                <span>Informasi pengguna</span>
+                            <button class="multisteps-form__progress-btn js-active" type="button" title="a" disabled>
+                                <span>Form Penyewaan</span>
                             </button>
-                            <button class="multisteps-form__progress-btn" disabled type="button" title="Address">Alamat</button>
+                            <button class="multisteps-form__progress-btn" disabled type="button" title="Address">Form Pembayaran</button>
                         </div>
                     </div>
                 </div>
