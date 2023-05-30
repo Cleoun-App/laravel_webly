@@ -15,6 +15,6 @@ class Rental extends Model
         'start_date', 'end_date', 'duration',
         'cost', 'note', 'status', 'customer_id',
         'payment_method', 'payment_date', 'payment_data',
-        'total_payment', 'pending_expired',
+        'total_payment', 'pending_expired', 'snap_token'
      ];
 }

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User;
 class RentContrller extends Controller
 {
 
+
     public static function api_rent(Request $request, User $user, $total_cost): Rental
     {
         $date_string = $request->end_date;

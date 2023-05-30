@@ -6,6 +6,10 @@ use Livewire\Component;
 use App\Models\Masters\Building;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
+use App\Models\Administrations\RentBuilding;
+use App\Models\Transactions\Rental;
+use Illuminate\Support\Facades\DB;
+use App\Services\Midtrans\CreateSnapTokenService;
 
 class RentForm extends Component
 {
@@ -13,14 +17,25 @@ class RentForm extends Component
 
     public $can_next = false;
 
+    public $adm_fee, $tax_fee;
+
     public $renter_id, $note, $building_id, $start_date, $end_date, $promo_code;
 
-    public $duration, $total_payment, $status_payment, $payment_exp, $payment_detail = [];
+    public $duration, $_duration, $total_payment, $status_payment, $payment_exp, $payment_detail = [];
 
-    public $renter;
+    public $renter, $building;
+
+    public $snap_token;
+
+    public $form_page = 'penyewaan';
+
+    public $have_booking = false;
+
+    public $booking_data = [];
 
     public function mount()
     {
+        $this->adm_fee = config('app.adm_fee');
         $this->fakeData();
     }
 
@@ -51,6 +66,7 @@ class RentForm extends Component
         $this->note = fake()->sentence;
 
         $this->duration = $duration['format'];
+        $this->_duration = $duration['real'];
         $this->total_payment = $building->price * $duration['real'] + 0 + 0;
 
         $this->renter = \App\Models\User::find($this->renter_id);
@@ -88,10 +104,23 @@ class RentForm extends Component
         }
     }
 
-    public function updatedPromoCode($v) {
-        if($v != "AX10") {
+    public function updatedPromoCode($v)
+    {
+        if ($v != "AX10") {
             $this->addError('promo_code', 'Kode Promo Tidak Tersedia');
         }
+    }
+
+
+    public function prev()
+    {
+        $this->form_page = 'penyewaan';
+    }
+
+    public function next()
+    {
+        $this->calculate();
+        $this->form_page = 'pembayaran';
     }
 
     public function updated($propertyName)
@@ -110,6 +139,8 @@ class RentForm extends Component
                 $isAvail = $building->isFree();
 
                 if (!$isAvail) $this->addError('building_id', 'Gedung tidak dapat di-pilih(tersewa)');
+
+                $this->building = $building;
             } else {
                 $this->addError('building_id', 'Gedung tidak di temukan');
             }
@@ -179,13 +210,18 @@ class RentForm extends Component
             $building = Building::find($this->building_id);
 
             $_duration = $this->hitungDurasi();
-            $adm_fee = config('app.adm_fee');
-            $tax_fee = config('app.tax_fee');
+
+            $rent_cost = $building->price * $_duration['real'];
+            $tax_fee = $this->hitungPajak($rent_cost);
+
+            $this->tax_fee = $tax_fee;
 
             $this->duration = $_duration['format'];
-            $this->total_payment = $building->price * $_duration['real'] + $adm_fee + $tax_fee;
+            $this->_duration = $_duration['real'];
+            $this->total_payment = $rent_cost + $tax_fee + $this->adm_fee;
 
             $this->renter = \App\Models\User::find($this->renter_id);
+            $this->building = $building;
 
             $this->can_next = true;
         } catch (ValidationException $ve) {
@@ -230,8 +266,120 @@ class RentForm extends Component
         ];
     }
 
+    public function booking()
+    {
+        try {
+            DB::beginTransaction();
+
+            $building = Building::find($this->building_id);
+            $customer = \App\Models\User::find($this->renter_id);
+
+            $rent_building = new RentBuilding();
+            $trx_rental = new Rental();
+
+            $trx_rental->start_date = $this->start_date;
+            $trx_rental->end_date = $this->end_date;
+            $trx_rental->duration = $this->_duration;
+            $trx_rental->cost = $this->total_payment;
+            $trx_rental->note = $this->note;
+            $trx_rental->status = 'waiting';
+            $trx_rental->customer_id = $this->renter_id;
+
+            $trx_rental->save();
+
+            $trx_data['order_id'] = $trx_rental->getKey() ?? uniqid(time());
+            $trx_data['gross_amount'] = $this->total_payment;
+            $trx_data['data'] = [
+                'trx_type' => 'rental',
+                'rent_start' => $this->start_date,
+                'rent_end' => $this->end_date,
+                'duration' => $this->duration,
+            ];
+
+            $item_data['name'] = $building->name;
+            $item_data['price'] = $building->price;
+            $item_data['data'] = [];
+
+            $user_data['name'] = $customer->name;
+            $user_data['email'] = $customer->email;
+            $user_data['phone'] = $customer->nomor_telp;
+
+            $snap_token = $this->createSnapToken($trx_data, $item_data, $user_data);
+
+            $trx_rental->update([
+                'snap_token' => $snap_token
+            ]);
+
+            $rent_building->rent()->associate($trx_rental);
+            $rent_building->user()->associate($customer);
+            $rent_building->building()->associate($building);
+
+            $rent_building->save();
+
+            DB::commit();
+
+            $this->have_booking = true;
+            $this->booking_data = [
+                'rent_building_id' => $rent_building->getKey(),
+                'trx_rental_id' => $trx_rental->getKey(),
+            ];
+
+            session()->flash('success', 'Gedung berhasil di-Booking!, silahkan lanjutkan pembayaran');
+
+            $this->dispatchBrowserEvent('refresh-el');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            // session()->flash('error', 'Pembayaran Gagal, Silahkan Coba beberapa saat lagi!!');
+
+            session()->flash('error', $th->getMessage());
+        }
+    }
+
+    public function unBooking()
+    {
+        try {
+            $rb_id = $this->booking_data['rent_building_id'];
+            $rn_id = $this->booking_data['trx_rental_id'];
+
+            $rb_m = RentBuilding::find($rb_id);
+            $rn_m = Rental::find($rn_id);
+
+            $rb_m->delete();
+            $rn_m->delete();
+
+            session()->flash('success', 'Transaksi Penyewaan Gedung di-unbooking');
+
+            $this->have_booking = false;
+
+            $this->dispatchBrowserEvent('refresh-el');
+        } catch (\Throwable $th) {
+
+            session()->flash('error', $th->getMessage());
+        }
+    }
+
+    private function createSnapToken($trx_data, $item_data, $user_data)
+    {
+        $midtrans = new CreateSnapTokenService($trx_data, $item_data, $user_data);
+
+        return $midtrans->getSnapToken();
+    }
+
     private function hasErrors()
     {
         return count($this->getErrorBag()->all()) > 0;
+    }
+
+    private function hitungPajak($rentalAmount)
+    {
+        // Mengatur tarif pajak (misalnya, 10%)
+        $taxRate = 0.1;
+
+        // Melakukan perhitungan pajak
+        $taxAmount = $rentalAmount * $taxRate;
+
+        // Mengembalikan jumlah pajak yang harus dibayar
+        return $taxAmount;
     }
 }
