@@ -27,10 +27,22 @@ class CreateSnapTokenService extends Midtrans
             ],
             'item_details' => [
                 [
-                    'id' => 1,
+                    'id' => '001',
                     'price' => $this->item_data['price'],
                     'name' => $this->item_data['name'],
                     'item_data' => $this->item_data['data'] ?? [],
+                    'quantity' => $this->item_data['duration'],
+                ],
+                [
+                    'id' => '002',
+                    'price' => intval($this->trx_data['tax_fee']),
+                    'name' => 'Pajak',
+                    'quantity' => 1,
+                ],
+                [
+                    'id' => '003',
+                    'price' => intval($this->trx_data['adm_fee']),
+                    'name' => 'Biaya Administrasi',
                     'quantity' => 1,
                 ],
             ],

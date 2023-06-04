@@ -46,7 +46,6 @@ class CanteenController extends Controller
 
             $canteen->save();
 
-
             return redirect()->back()->with('success', 'Kantin berhasil di-tambahkan!');
         } catch (ValidationException $e) {
             throw $e;

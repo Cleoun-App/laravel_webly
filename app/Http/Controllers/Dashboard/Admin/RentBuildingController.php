@@ -17,4 +17,9 @@ class RentBuildingController extends Controller
 
         return view('dashboard.gedung.ds-admin-rent-building', $data);
     }
+
+    public function transactions()
+    {
+        return view('dashboard.ds-add-user-page');
+    }
 }

@@ -31,6 +31,8 @@
             height: 90vh;
         }
     </style>
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 </head>
 
 
@@ -224,19 +226,19 @@
                     <div class="collapse " id="building_rent">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="{{ route('rent_building') }}">
+                                <a class="nav-link" href="{{ route('adm.building.rent') }}">
                                     <span class="sidenav-mini-icon"> S </span>
                                     <span class="sidenav-normal"> Sewa Gedung </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/gedung_tersewa.php">
+                                <a class="nav-link" href="{{ route('adm.building.transactions') }}">
                                     <span class="sidenav-mini-icon"> S </span>
                                     <span class="sidenav-normal"> Transaksi Penyewaan </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/log_transaksi.php">
+                                <a class="nav-link" href="{{ route('adm.building.log.transactions') }}">
                                     <span class="sidenav-mini-icon"> S </span>
                                     <span class="sidenav-normal">Log Transaksi </span>
                                 </a>
@@ -1141,6 +1143,20 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="/assets/js/soft-ui-dashboard.min.js?v=1.1.1"></script>
+
+    <script>
+        function paynow(snap_token, callback) {
+
+            snap.pay(snap_token, {
+                // Optional
+                onSuccess: callback,
+                // Optional
+                onPending: callback,
+                // Optional
+                onError: callback
+            });
+        };
+    </script>
 
 
 </body>

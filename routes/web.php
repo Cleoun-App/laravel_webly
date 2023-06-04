@@ -15,6 +15,8 @@ use App\Http\Controllers\Dashboard\Master\CanteenController;
 use App\Http\Controllers\Dashboard\Master\CarController;
 use App\Http\Controllers\Dashboard\Master\DriverController;
 use App\Http\Controllers\Dashboard\Admin\RentBuildingController;
+use function GuzzleHttp\json_encode;
+use App\Http\Controllers\PaymentCallbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,16 @@ Route::post('/login', [AuthController::class, 'attempt_login'])->middleware('gue
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Route::post('transaction/payment/callback/', function() {
+//     $b = Building::find(1);
+
+//     $b->description = json_encode(request());
+
+//     $b->save();
+// });
+
+
+Route::post('transaction/payment/callback/', [PaymentCallbackController::class, 'receive']);
 
 Route::get('/', function () {
     return redirect()->route('dashboard.index');
@@ -52,10 +64,7 @@ Route::get('/', function () {
 
 Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
-
-
     Route::get('/index', [HomePageController::class, 'index'])->name('dashboard.index');
-
 
     Route::get('/add/user', [UserController::class, 'addUserPage'])->name('addUserPage');
     Route::post('/add/user', [UserController::class, 'addUser'])->name('postUserData');
@@ -135,8 +144,13 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     /**
      *  Administrasi
      *
+     *  Url administrasi penyewaan gedung
      */
+    Route::get('/administration/building/rent', [RentBuildingController::class, 'rentBuilding'])->name('adm.building.rent');
+    Route::get('/administration/building/transactions', [RentBuildingController::class, 'transactions'])->name('adm.building.transactions');
+    Route::get('/administration/building/log/transactions', [RentBuildingController::class, 'logTransaction'])->name('adm.building.log.transactions');
 
-     Route::get('/master/building/rent', [RentBuildingController::class, 'rentBuilding'] )->name('rent_building');
+
 
 });
+

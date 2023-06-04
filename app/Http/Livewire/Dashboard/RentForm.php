@@ -10,9 +10,14 @@ use App\Models\Administrations\RentBuilding;
 use App\Models\Transactions\Rental;
 use Illuminate\Support\Facades\DB;
 use App\Services\Midtrans\CreateSnapTokenService;
+use App\Models\User;
+use App\Models\Transactions\Order;
 
 class RentForm extends Component
 {
+
+    public $order_id;
+
     public $building_price;
 
     public $can_next = false;
@@ -65,11 +70,15 @@ class RentForm extends Component
 
         $this->note = fake()->sentence;
 
+        $cost = $building->price * $duration['real'];
+        $tax = $this->hitungPajak($cost);
+
         $this->duration = $duration['format'];
         $this->_duration = $duration['real'];
-        $this->total_payment = $building->price * $duration['real'] + 0 + 0;
+        $this->total_payment = intval($cost + $tax + $this->adm_fee);
+        $this->tax_fee = $tax;
 
-        $this->renter = \App\Models\User::find($this->renter_id);
+        $this->renter = User::find($this->renter_id);
 
         $this->can_next = true;
     }
@@ -119,8 +128,23 @@ class RentForm extends Component
 
     public function next()
     {
+        $building = Building::find($this->building_id);
+
+        $user = \App\Models\User::find($this->renter_id);
+
+        $this->validate();
+
+        $this->validasiBuilidng($building);
+        $this->validasiRenter($user);
+        $this->validasiRentDate();
+
         $this->calculate();
-        $this->form_page = 'pembayaran';
+
+        if ($this->hasErrors() === false) {
+            $this->form_page = 'pembayaran';
+        } else {
+            $this->can_next = false;
+        }
     }
 
     public function updated($propertyName)
@@ -129,38 +153,29 @@ class RentForm extends Component
 
         // Validasi tambahan jika property yang diubah adalah 'tanggalMulai' atau 'tanggalAkhir'
         if ($propertyName === 'start_date' || $propertyName === 'end_date') {
-            $this->validasiTambahan();
-        }
-
-        if ($propertyName === 'building_id') {
-            $building = Building::find($this->building_id);
-
-            if ($building instanceof Building) {
-                $isAvail = $building->isFree();
-
-                if (!$isAvail) $this->addError('building_id', 'Gedung tidak dapat di-pilih(tersewa)');
-
-                $this->building = $building;
-            } else {
-                $this->addError('building_id', 'Gedung tidak di temukan');
-            }
-        }
-
-
-        if ($propertyName === 'renter_id') {
-            $user = \App\Models\User::find($this->renter_id);
-
-            if ($user instanceof \App\Models\User === false) $this->addError('renter_id', 'Pengguna tidak di temukan!!');
-        }
-
-        if ($this->hasErrors() === false) {
-            $this->calculate();
-        } else {
-            $this->can_next = false;
+            $this->validasiRentDate();
         }
     }
 
-    public function validasiTambahan()
+    public function validasiBuilidng(Building $building)
+    {
+        if ($building instanceof Building) {
+            $isAvail = $building->isFree();
+
+            if (!$isAvail) $this->addError('building_id', 'Gedung tidak dapat di-pilih(tersewa)');
+
+            $this->building = $building;
+        } else {
+            $this->addError('building_id', 'Gedung tidak di temukan');
+        }
+    }
+
+    public function validasiRenter(User $user)
+    {
+        if ($user instanceof User === false) $this->addError('renter_id', 'Pengguna tidak di temukan!!');
+    }
+
+    public function validasiRentDate()
     {
 
         $mulai = new \DateTime($this->start_date);
@@ -239,30 +254,11 @@ class RentForm extends Component
 
         $durasi = $mulai->diff($akhir);
 
-        $hasil = '';
-
-        if ($durasi->y > 0) {
-            $hasil .= $durasi->y . ' tahun ';
-        }
-        if ($durasi->m > 0) {
-            $hasil .= $durasi->m . ' bulan ';
-        }
-        if ($durasi->d > 0) {
-            $hasil .= $durasi->d . ' hari ';
-        }
-        if ($durasi->h > 0) {
-            $hasil .= $durasi->h . ' jam ';
-        }
-        if ($durasi->i > 0) {
-            $hasil .= $durasi->i . ' menit ';
-        }
-        if ($durasi->s > 0) {
-            $hasil .= $durasi->s . ' detik ';
-        }
+        $hasil = $durasi->days . " hari";
 
         return [
             'format' => trim($hasil),
-            'real' => $durasi->d,
+            'real' => $durasi->days,
         ];
     }
 
@@ -276,19 +272,31 @@ class RentForm extends Component
 
             $rent_building = new RentBuilding();
             $trx_rental = new Rental();
+            $order = new Order();
 
             $trx_rental->start_date = $this->start_date;
             $trx_rental->end_date = $this->end_date;
             $trx_rental->duration = $this->_duration;
             $trx_rental->cost = $this->total_payment;
             $trx_rental->note = $this->note;
-            $trx_rental->status = 'waiting';
             $trx_rental->customer_id = $this->renter_id;
 
             $trx_rental->save();
 
-            $trx_data['order_id'] = $trx_rental->getKey() ?? uniqid(time());
+            $order->key = uniqid(time());
+            $order->total_price = intval($this->total_payment);
+            $order->transaction()->associate($trx_rental);
+
+            $order->save();
+
+            $order_id = $order->key;
+
+            $this->order_id = $order_id;
+
+            $trx_data['order_id'] = $order_id;
             $trx_data['gross_amount'] = $this->total_payment;
+            $trx_data['tax_fee'] = $this->tax_fee;
+            $trx_data['adm_fee'] = $this->adm_fee;
             $trx_data['data'] = [
                 'trx_type' => 'rental',
                 'rent_start' => $this->start_date,
@@ -298,6 +306,7 @@ class RentForm extends Component
 
             $item_data['name'] = $building->name;
             $item_data['price'] = $building->price;
+            $item_data['duration'] = $this->_duration;
             $item_data['data'] = [];
 
             $user_data['name'] = $customer->name;
@@ -306,9 +315,12 @@ class RentForm extends Component
 
             $snap_token = $this->createSnapToken($trx_data, $item_data, $user_data);
 
-            $trx_rental->update([
+            // update snap token
+            $order->update([
                 'snap_token' => $snap_token
             ]);
+
+            $this->snap_token = $snap_token;
 
             $rent_building->rent()->associate($trx_rental);
             $rent_building->user()->associate($customer);
@@ -316,17 +328,19 @@ class RentForm extends Component
 
             $rent_building->save();
 
-            DB::commit();
-
             $this->have_booking = true;
             $this->booking_data = [
                 'rent_building_id' => $rent_building->getKey(),
                 'trx_rental_id' => $trx_rental->getKey(),
             ];
 
+            DB::commit();
+
             session()->flash('success', 'Gedung berhasil di-Booking!, silahkan lanjutkan pembayaran');
 
             $this->dispatchBrowserEvent('refresh-el');
+
+            $this->form_page = "pembayaran";
         } catch (\Throwable $th) {
             DB::rollBack();
 
@@ -344,9 +358,11 @@ class RentForm extends Component
 
             $rb_m = RentBuilding::find($rb_id);
             $rn_m = Rental::find($rn_id);
+            $ro_m = Order::where('key', $this->order_id)->first();
 
             $rb_m->delete();
             $rn_m->delete();
+            $ro_m->delete();
 
             session()->flash('success', 'Transaksi Penyewaan Gedung di-unbooking');
 
@@ -374,12 +390,25 @@ class RentForm extends Component
     private function hitungPajak($rentalAmount)
     {
         // Mengatur tarif pajak (misalnya, 10%)
-        $taxRate = 0.1;
+        $taxRate = 0.08;
 
         // Melakukan perhitungan pajak
         $taxAmount = $rentalAmount * $taxRate;
 
         // Mengembalikan jumlah pajak yang harus dibayar
         return $taxAmount;
+    }
+
+    public function paymentResult($result)
+    {
+        if ($result['transaction_status'] ?? '' == "pending") {
+            session()->flash('info', $result['status_message'] ?? 'Transaksi sedang di-proses');
+        } else if ($result['transaction_status'] ?? '' == "error") {
+            session()->flash('error', $result['status_message']);
+        } else if ($result['transaction_status'] ?? '' == "success") {
+            session()->flash('success', "Pembayaran berhasil di lakukan");
+        } else {
+            session()->flash('error', "Pembayaran gagal! '" . $result['status_message'] ?? 'terjadi kesalahan' . "'");
+        }
     }
 }

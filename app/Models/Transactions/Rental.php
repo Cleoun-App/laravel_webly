@@ -14,7 +14,10 @@ class Rental extends Model
     protected $fillable = [
         'start_date', 'end_date', 'duration',
         'cost', 'note', 'status', 'customer_id',
-        'payment_method', 'payment_date', 'payment_data',
-        'total_payment', 'pending_expired', 'snap_token'
-     ];
+    ];
+
+    public function order()
+    {
+        return $this->morphOne(Order::class, 'model');
+    }
 }
