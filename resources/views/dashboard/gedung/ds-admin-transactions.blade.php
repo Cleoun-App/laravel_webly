@@ -6,12 +6,35 @@
 @section('content')
 
 <div class="container-fluid py-4">
+
     <div class="row mt-4">
+        <div class="col-lg-12 m-auto">
+            @if ($msg = session()->get('error'))
+            <div class="alert alert-danger text-light" role="alert">
+                <strong>Error!</strong> {{ $msg }}
+            </div>
+            @endif
+
+            @if ($msg = session()->get('success'))
+            <div class="alert alert-success text-light" role="alert">
+                <strong>Success!</strong> {{ $msg }}
+            </div>
+            @endif
+
+            @if ($msg = session()->get('info'))
+            <div class="alert alert-warning text-light" role="alert">
+                <strong>Info!</strong> {{ $msg }}
+            </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="row mt-2">
         <div class="col-12">
             <div class="card">
                 <!-- Card header -->
                 <div class="card-header pb-1">
-                    <h5 class="mb-0">Table Transaksi Gedung</h5>
+                    <h5 class="mb-0">{{ $page_title }}</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-flush" id="datatable-search">
@@ -22,22 +45,48 @@
                                 <th>Periode</th>
                                 <th>Harga</th>
                                 <th>Penyewa</th>
+                                <th>Status Transaksi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-sm font-weight-normal">Gelora Buat Konser</td>
-                                <td class="text-sm font-weight-normal">Kamis, 20 Maret 2023</td>
-                                <td class="text-sm font-weight-normal">3 Hari</td>
-                                <td class="text-sm font-weight-normal">120k</td>
-                                <td class="text-sm font-weight-normal">
-                                    Dian Wenadi
-                                </td>
-                                <td class="text-sm font-weight-normal">
-                                    <a class="btn badge badge-success m-0" href="\approval_page.php">Approval</a>
-                                </td>
-                            </tr>
+                            @foreach ($transactions as $tr)
+                                @php
+                                    $payment_status = $tr->rent->order->payment_status;
+                                @endphp
+                                <tr>
+                                    <td class="text-sm font-weight-normal">{{ $tr->building->name }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $tr->rent->formattedStartDate() }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $tr->rent->formatedDuration() }}</td>
+                                    <td class="text-sm font-weight-normal">{{ "RP " .  number_format($tr->rent?->cost ?? 0, 0, ',', '.') }}</td>
+                                    <td class="text-sm font-weight-normal">
+                                        {{ $tr->user->name }}
+                                    </td>
+                                    <td class="text-sm font-weight-normal">
+                                        @if (strtolower($payment_status) == 'success')
+                                            <span class="badge badge-success m-0">Berhasil</span>
+                                        @endif
+                                        @if (strtolower($payment_status) == 'error')
+                                            <span class="badge badge-danger m-0">Error</span>
+                                        @endif
+                                        @if (strtolower($payment_status) == 'cancel')
+                                            <span class="badge badge-dark m-0" style="color: whitesmoke">Dibatalkan</span>
+                                        @endif
+                                        @if (strtolower($payment_status) == 'waiting')
+                                            <span class="badge badge-warning m-0">Waiting</span>
+                                        @endif
+                                        @if (strtolower($payment_status) == 'expired')
+                                            <span class="badge badge-danger m-0">Expired</span>
+                                        @endif
+                                        @if (strtolower($payment_status) == 'pending')
+                                            <span class="badge badge-warning m-0">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-sm font-weight-normal">
+                                        <a class="btn badge badge-info m-0" href="{{ route('adm.building.show.trx', $tr->id) }}">Detail</a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

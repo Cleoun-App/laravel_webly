@@ -17,8 +17,10 @@ return new class extends Migration
             $table->integer('total_price');
             $table->string('model_id');
             $table->string('model_type');
-            $table->enum('payment_status', ['waiting', 'success', 'expired', 'cancel', 'error'])->comment('1=menunggu pembayaran, 2=sudah dibayar, 3=kadaluarsa, 4=batal');
+            $table->string('type');
+            $table->enum('payment_status', ['waiting', 'success', 'expired', 'cancel', 'error', 'pending'])->comment('1=menunggu pembayaran, 2=sudah dibayar, 3=kadaluarsa, 4=batal');
             $table->json('payment_data')->nullable();
+            $table->json('transaction_data');
             $table->string('payment_method')->nullable();
             $table->dateTime('payment_date')->nullable();
             $table->string('snap_token', 36)->nullable();

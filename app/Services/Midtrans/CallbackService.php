@@ -44,6 +44,15 @@ class CallbackService extends Midtrans
         return ($this->notification->transaction_status == 'cancel');
     }
 
+    public function isDenied()
+    {
+        return ($this->notification->transaction_status == 'deny');
+    }
+
+    public function isPending()
+    {
+        return ($this->notification->transaction_status == 'pending');
+    }
     public function getNotification(): \Midtrans\Notification
     {
         return $this->notification;

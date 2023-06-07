@@ -17,6 +17,7 @@ use App\Http\Controllers\Dashboard\Master\DriverController;
 use App\Http\Controllers\Dashboard\Admin\RentBuildingController;
 use function GuzzleHttp\json_encode;
 use App\Http\Controllers\PaymentCallbackController;
+use App\Http\Controllers\MidtransController;
 
 /*
 |--------------------------------------------------------------------------
@@ -148,8 +149,15 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
      */
     Route::get('/administration/building/rent', [RentBuildingController::class, 'rentBuilding'])->name('adm.building.rent');
     Route::get('/administration/building/transactions', [RentBuildingController::class, 'transactions'])->name('adm.building.transactions');
+    Route::get('/administration/building/transactions/{id}', [RentBuildingController::class, 'showTrx'])->name('adm.building.show.trx');
     Route::get('/administration/building/log/transactions', [RentBuildingController::class, 'logTransaction'])->name('adm.building.log.transactions');
 
+
+    /**
+     *  Midtrans transaction methods
+     */
+
+     Route::get('/administration/transaction/{id}/cancel', [MidtransController::class, 'cancel'])->name('midtrans.trx.cancel');
 
 
 });

@@ -35,6 +35,14 @@ class PaymentCallbackController extends Controller
                     $new_status = 'cancel';
                 }
 
+                if ($callback->isDenied()) {
+                    $new_status = 'cancel';
+                }
+
+                if ($callback->isPending()) {
+                    $new_status = 'pending';
+                }
+
                 $_notif = $notification->getResponse();
 
                 $order->update([
@@ -57,6 +65,7 @@ class PaymentCallbackController extends Controller
                     ], 403);
             }
         } catch (\Throwable $th) {
+            throw $th;
             return response()
                 ->json([
                     'error' => true,

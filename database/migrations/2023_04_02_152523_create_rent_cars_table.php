@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->foreign('user_id')->on('users')->references('id');
             $table->foreign('driver_id')->on('master_drivers')->references('id');
-            $table->foreign('rent_id')->on('trx_rentals')->references('id');
+            $table->foreign('rent_id')->on('trx_rentals')->references('id')->cascadeOnDelete();
             $table->foreign('car_id')->on('master_cars')->references('id');
         });
     }

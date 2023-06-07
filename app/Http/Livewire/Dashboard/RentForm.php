@@ -30,17 +30,12 @@ class RentForm extends Component
 
     public $renter, $building;
 
-    public $snap_token;
-
     public $form_page = 'penyewaan';
-
-    public $have_booking = false;
-
-    public $booking_data = [];
 
     public function mount()
     {
         $this->adm_fee = config('app.adm_fee');
+
         $this->fakeData();
     }
 
@@ -50,6 +45,8 @@ class RentForm extends Component
 
         $this->renter_id = 2;
         $buildings = Building::getAvailableBuildings();
+
+        if (count($buildings) == 0) return;
 
         $building = $buildings[rand(0, count($buildings) - 1)];
 
@@ -247,21 +244,6 @@ class RentForm extends Component
         }
     }
 
-    private function hitungDurasi($start_date = null, $end_date = null)
-    {
-        $mulai = new \DateTime($start_date ?? $this->start_date);
-        $akhir = new \DateTime($end_date ?? $this->end_date);
-
-        $durasi = $mulai->diff($akhir);
-
-        $hasil = $durasi->days . " hari";
-
-        return [
-            'format' => trim($hasil),
-            'real' => $durasi->days,
-        ];
-    }
-
     public function booking()
     {
         try {
@@ -284,10 +266,9 @@ class RentForm extends Component
             $trx_rental->save();
 
             $order->key = uniqid(time());
+            $order->type = 'rent_building';
             $order->total_price = intval($this->total_payment);
             $order->transaction()->associate($trx_rental);
-
-            $order->save();
 
             $order_id = $order->key;
 
@@ -316,11 +297,7 @@ class RentForm extends Component
             $snap_token = $this->createSnapToken($trx_data, $item_data, $user_data);
 
             // update snap token
-            $order->update([
-                'snap_token' => $snap_token
-            ]);
-
-            $this->snap_token = $snap_token;
+            $order->snap_token = $snap_token;
 
             $rent_building->rent()->associate($trx_rental);
             $rent_building->user()->associate($customer);
@@ -328,19 +305,36 @@ class RentForm extends Component
 
             $rent_building->save();
 
-            $this->have_booking = true;
-            $this->booking_data = [
-                'rent_building_id' => $rent_building->getKey(),
-                'trx_rental_id' => $trx_rental->getKey(),
+            $this->order_id = $order->key;
+
+            $order->transaction_data = [
+                'rent_data' => [
+                    'rent_id' => $rent_building->id,
+                    'rent_model' => get_class($rent_building),
+                    'trx_name' => "Penyewaan Gedung " . $building->name,
+                    'start_date' => $this->start_date,
+                    'end_date' => $this->end_date,
+                    'duration' => $this->duration,
+                    'item_id' => $building->id,
+                    'item_model' => get_class($building),
+                    'item_name' => $building->name,
+                    'item_price' => $building->price,
+                ],
+                'customer_data' => [
+                    'id' => $customer->id,
+                    'name' => $customer->name,
+                    'phone' => $customer->nomor_telp,
+                ]
             ];
+
+            $order->save();
 
             DB::commit();
 
             session()->flash('success', 'Gedung berhasil di-Booking!, silahkan lanjutkan pembayaran');
 
-            $this->dispatchBrowserEvent('refresh-el');
+            $this->redirectRoute('adm.building.show.trx', [$rent_building->id]);
 
-            $this->form_page = "pembayaran";
         } catch (\Throwable $th) {
             DB::rollBack();
 
@@ -350,31 +344,22 @@ class RentForm extends Component
         }
     }
 
-    public function unBooking()
+
+
+    private function hitungDurasi($start_date = null, $end_date = null)
     {
-        try {
-            $rb_id = $this->booking_data['rent_building_id'];
-            $rn_id = $this->booking_data['trx_rental_id'];
+        $mulai = new \DateTime($start_date ?? $this->start_date);
+        $akhir = new \DateTime($end_date ?? $this->end_date);
 
-            $rb_m = RentBuilding::find($rb_id);
-            $rn_m = Rental::find($rn_id);
-            $ro_m = Order::where('key', $this->order_id)->first();
+        $durasi = $mulai->diff($akhir);
 
-            $rb_m->delete();
-            $rn_m->delete();
-            $ro_m->delete();
+        $hasil = $durasi->days . " hari";
 
-            session()->flash('success', 'Transaksi Penyewaan Gedung di-unbooking');
-
-            $this->have_booking = false;
-
-            $this->dispatchBrowserEvent('refresh-el');
-        } catch (\Throwable $th) {
-
-            session()->flash('error', $th->getMessage());
-        }
+        return [
+            'format' => trim($hasil),
+            'real' => $durasi->days,
+        ];
     }
-
     private function createSnapToken($trx_data, $item_data, $user_data)
     {
         $midtrans = new CreateSnapTokenService($trx_data, $item_data, $user_data);
@@ -397,18 +382,5 @@ class RentForm extends Component
 
         // Mengembalikan jumlah pajak yang harus dibayar
         return $taxAmount;
-    }
-
-    public function paymentResult($result)
-    {
-        if ($result['transaction_status'] ?? '' == "pending") {
-            session()->flash('info', $result['status_message'] ?? 'Transaksi sedang di-proses');
-        } else if ($result['transaction_status'] ?? '' == "error") {
-            session()->flash('error', $result['status_message']);
-        } else if ($result['transaction_status'] ?? '' == "success") {
-            session()->flash('success', "Pembayaran berhasil di lakukan");
-        } else {
-            session()->flash('error', "Pembayaran gagal! '" . $result['status_message'] ?? 'terjadi kesalahan' . "'");
-        }
     }
 }

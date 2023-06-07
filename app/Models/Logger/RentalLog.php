@@ -34,4 +34,10 @@ class RentalLog extends Model
     {
         return $this->model_type::find($this->model_id);
     }
+
+    public function scopeLogRent($_, Rental $rental) {
+        $logger = new self;
+
+        $logger->user()->associate($rental->customer);
+    }
 }

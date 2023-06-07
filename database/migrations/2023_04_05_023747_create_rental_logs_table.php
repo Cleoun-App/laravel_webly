@@ -13,15 +13,20 @@ return new class extends Migration
     {
         Schema::create('rental_logs', function (Blueprint $table) {
             $table->id();
+            $table->string('rental_name');
             $table->foreignId('user_id');
-            $table->foreignId('rent_id');
-            $table->integer('model_id');
-            $table->string('model_type');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->integer('duration');
+            $table->integer('rent_cost');
+            $table->integer('total_payment');
+
+            $table->json('rental_data');
+            $table->json('transaction_data');
             $table->timestamps();
 
 
             $table->foreign('user_id')->on('users')->references('id');
-            $table->foreign('rent_id')->on('trx_rentals')->references('id');
         });
     }
 

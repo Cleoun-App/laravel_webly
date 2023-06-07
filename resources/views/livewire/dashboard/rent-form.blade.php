@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div class="button-row d-flex mt-4">
-                <button class="btn bg-gradient-primary ms-auto mb-0" wire:click="next" type="button" title="Next">Selanjutnya</button>
+                <button class="btn bg-gradient-primary ms-auto mb-0 js-next" wire:click="next" type="button" title="Next">Selanjutnya</button>
             </div>
         </div>
     </div>
@@ -173,22 +173,11 @@
                 </div>
             </div>
             <div class="button-row d-flex mt-4">
-                @if ($have_booking)
-                    <button class="btn bg-gradient-danger mb-0" type="button" wire:click="unBooking" wire:loading.attr="disabled" wire:loading.class="bg-gradient-dark">UnBooking</button>
-                    <button class="btn bg-gradient-success ms-auto mb-0" type="button" onclick="paynow('{{ $snap_token }}', _callback)">Bayar Sekarang</button>
-                @else
-                    <button class="btn bg-gradient-light mb-0 js-btn-prev" type="button" title="Prev" wire:click="prev">Sebelumnya</button>
-                    <button class="btn bg-gradient-warning mb-0 ms-auto" type="button" wire:click="booking" wire:loading.attr="disabled" wire:loading.class="bg-gradient-dark">Booking</button>
-                @endif
+                <button class="btn bg-gradient-light mb-0 js-btn-prev" type="button" title="Prev" wire:click="prev">Sebelumnya</button>
+                <button class="btn bg-gradient-warning mb-0 ms-auto" type="button" wire:click="booking" wire:loading.attr="disabled" wire:loading.class="bg-gradient-dark">Booking</button>
             </div>
         </div>
     </div>
 
-
-    <script>
-        function _callback(result) {
-            @this.paymentResult(result);
-        }
-    </script>
 
 </div>
