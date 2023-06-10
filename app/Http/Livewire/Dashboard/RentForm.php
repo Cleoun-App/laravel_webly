@@ -269,6 +269,7 @@ class RentForm extends Component
             $order->type = 'rent_building';
             $order->total_price = intval($this->total_payment);
             $order->transaction()->associate($trx_rental);
+            $order->user()->associate($customer);
 
             $order_id = $order->key;
 
@@ -333,7 +334,7 @@ class RentForm extends Component
 
             session()->flash('success', 'Gedung berhasil di-Booking!, silahkan lanjutkan pembayaran');
 
-            $this->redirectRoute('adm.building.show.trx', [$rent_building->id]);
+            $this->redirectRoute('adm.building.show.trx', [$order->key]);
 
         } catch (\Throwable $th) {
             DB::rollBack();

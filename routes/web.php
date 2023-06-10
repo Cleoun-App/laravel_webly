@@ -150,6 +150,8 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/administration/building/rent', [RentBuildingController::class, 'rentBuilding'])->name('adm.building.rent');
     Route::get('/administration/building/transactions', [RentBuildingController::class, 'transactions'])->name('adm.building.transactions');
     Route::get('/administration/building/transactions/{id}', [RentBuildingController::class, 'showTrx'])->name('adm.building.show.trx');
+    Route::get('/administration/building/transactions/{id}/unbooking', [RentBuildingController::class, 'unBooking'])->name('adm.building.trx.unbooking');
+    Route::get('/administration/building/transactions/{id}/delete', [RentBuildingController::class, 'delete'])->name('adm.building.trx.delete');
     Route::get('/administration/building/log/transactions', [RentBuildingController::class, 'logTransaction'])->name('adm.building.log.transactions');
 
 
@@ -158,6 +160,7 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
      */
 
      Route::get('/administration/transaction/{id}/cancel', [MidtransController::class, 'cancel'])->name('midtrans.trx.cancel');
+     Route::get('/administration/transaction/{id}/refund', [MidtransController::class, 'refund'])->name('midtrans.trx.refund');
 
 
 });

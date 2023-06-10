@@ -46,6 +46,7 @@ class PaymentCallbackController extends Controller
                 $_notif = $notification->getResponse();
 
                 $order->update([
+                    'total_payment' => $notification->gross_amount,
                     'payment_status' => $new_status,
                     'payment_data' => json_encode($_notif ?? ''),
                     'payment_method' => $notification->payment_type ?? '',

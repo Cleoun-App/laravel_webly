@@ -18,7 +18,25 @@ class MidtransController extends Controller
 
             $response = $midtrans->cancel($request->id);
 
-            $order = Order::where(['key' => $request->id])->first();
+            $order = Order::where(['key' => $request->id])->firstOrFail();
+
+            $order->deleteTrx();
+
+            return redirect()->route('adm.building.transactions')->with('success', $response);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function refund(Request $request)
+    {
+        try {
+
+            $midtrans = new Midtrans;
+
+            $order = Order::where(['key' => $request->id])->firstOrFail();
+
+            $response = $midtrans->refund($order->key, $order->total_price);
 
             $order->deleteTrx();
 

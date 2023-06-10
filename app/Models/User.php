@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Masters\Building;
+use App\Models\Transactions\Order;
 
 class User extends Authenticatable
 {
@@ -51,11 +52,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function rent_building(Building $building) {
+    public function rent_building(Building $building)
+    { }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
     }
 
-    public function getPP() {
+    public function getPP()
+    {
         return $this->image == "" || $this->image == null ? '/default.png' : $this->image;
     }
 }

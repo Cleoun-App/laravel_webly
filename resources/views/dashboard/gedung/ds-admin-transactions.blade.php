@@ -40,7 +40,7 @@
                     <table class="table table-flush" id="datatable-search">
                         <thead class="thead-light">
                             <tr>
-                                <th>Nama Gedung</th>
+                                <th>Nama Transaksi</th>
                                 <th>Tgl Sewa</th>
                                 <th>Periode</th>
                                 <th>Harga</th>
@@ -50,17 +50,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($transactions as $tr)
+                            @foreach ($orders as $order)
                                 @php
-                                    $payment_status = $tr->rent->order->payment_status;
+                                    $payment_status = $order->payment_status;
+
+                                    $rent_data = $order->txData('rent_data');
+                                    $customer_data = $order->txData('customer_data');
                                 @endphp
                                 <tr>
-                                    <td class="text-sm font-weight-normal">{{ $tr->building->name }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $tr->rent->formattedStartDate() }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $tr->rent->formatedDuration() }}</td>
-                                    <td class="text-sm font-weight-normal">{{ "RP " .  number_format($tr->rent?->cost ?? 0, 0, ',', '.') }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $rent_data['trx_name'] }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $rent_data['start_date'] }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $rent_data['duration'] }}</td>
+                                    <td class="text-sm font-weight-normal">{{ "RP " .  number_format($order->total_price ?? 0, 0, ',', '.') }}</td>
                                     <td class="text-sm font-weight-normal">
-                                        {{ $tr->user->name }}
+                                        {{ $customer_data['name'] }}
                                     </td>
                                     <td class="text-sm font-weight-normal">
                                         @if (strtolower($payment_status) == 'success')
@@ -83,7 +86,7 @@
                                         @endif
                                     </td>
                                     <td class="text-sm font-weight-normal">
-                                        <a class="btn badge badge-info m-0" href="{{ route('adm.building.show.trx', $tr->id) }}">Detail</a>
+                                        <a class="btn badge badge-info m-0" href="{{ route('adm.building.show.trx', $order->key) }}">Detail</a>
                                     </td>
                                 </tr>
                             @endforeach

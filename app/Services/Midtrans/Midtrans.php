@@ -43,6 +43,11 @@ class Midtrans
         }
     }
 
+    public function refund($orderId, $refundAmount)
+    {
+        return Transaction::refund($orderId, $refundAmount);
+    }
+
     /**
      *  Expire kan transaksi sebelum berhasil
      */
