@@ -20,6 +20,12 @@ class MidtransController extends Controller
 
             $order = Order::where(['key' => $request->id])->firstOrFail();
 
+            $transaction = $order->transaction;
+
+            if ($transaction instanceof Rental) {
+                RentalLog::logTrx($transaction, 'cancel');
+            }
+
             $order->deleteTrx();
 
             return redirect()->route('adm.building.transactions')->with('success', $response);
@@ -37,6 +43,12 @@ class MidtransController extends Controller
             $order = Order::where(['key' => $request->id])->firstOrFail();
 
             $response = $midtrans->refund($order->key, $order->total_price);
+
+            $transaction = $order->transaction;
+
+            if ($transaction instanceof Rental) {
+                RentalLog::logTrx($transaction, 'refund');
+            }
 
             $order->deleteTrx();
 

@@ -13,15 +13,18 @@ return new class extends Migration
     {
         Schema::create('rental_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('rental_name');
+            $table->string('log_id')->unique();
+            $table->string('name');
             $table->foreignId('user_id');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->integer('duration');
-            $table->integer('rent_cost');
-            $table->integer('total_payment');
+            $table->integer('rental_cost');
+            $table->integer('total_payment')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->enum('payment_status', ['waiting', 'success', 'expired', 'cancel', 'error', 'pending', 'refund'])->comment('1=menunggu pembayaran, 2=sudah dibayar, 3=kadaluarsa, 4=batal');
+            $table->string('type')->comment('rent_building, rent_cars, etc...');
 
-            $table->json('rental_data');
             $table->json('transaction_data');
             $table->timestamps();
 

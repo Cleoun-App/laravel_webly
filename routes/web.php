@@ -150,10 +150,10 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/administration/building/rent', [RentBuildingController::class, 'rentBuilding'])->name('adm.building.rent');
     Route::get('/administration/building/transactions', [RentBuildingController::class, 'transactions'])->name('adm.building.transactions');
     Route::get('/administration/building/transactions/{id}', [RentBuildingController::class, 'showTrx'])->name('adm.building.show.trx');
-    Route::get('/administration/building/transactions/{id}/unbooking', [RentBuildingController::class, 'unBooking'])->name('adm.building.trx.unbooking');
-    Route::get('/administration/building/transactions/{id}/delete', [RentBuildingController::class, 'delete'])->name('adm.building.trx.delete');
-    Route::get('/administration/building/log/transactions', [RentBuildingController::class, 'logTransaction'])->name('adm.building.log.transactions');
-
+    Route::get('/administration/building/transactions/{id}/delete', [RentBuildingController::class, 'delete'])->name('adm.building.order.delete');
+    Route::get('/administration/building/log/transactions', [RentBuildingController::class, 'logTransactions'])->name('adm.building.log.transactions');
+    Route::get('/administration/building/log/transaction/delete/{id}', [RentBuildingController::class, 'logDel'])->name('adm.building.log.transaction.delete');
+    Route::get('/administration/building/log/transaction/{id}', [RentBuildingController::class, 'logDetail'])->name('adm.building.log.detail');
 
     /**
      *  Midtrans transaction methods

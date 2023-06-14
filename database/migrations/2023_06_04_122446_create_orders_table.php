@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('model_type')->nullable();
             $table->string('type');
             $table->integer('total_payment')->nullable();
-            $table->enum('payment_status', ['waiting', 'success', 'expired', 'cancel', 'error', 'pending'])->comment('1=menunggu pembayaran, 2=sudah dibayar, 3=kadaluarsa, 4=batal');
+            $table->enum('payment_status', ['waiting', 'success', 'expired', 'cancel', 'error', 'pending', 'refund'])->comment('1=menunggu pembayaran, 2=sudah dibayar, 3=kadaluarsa, 4=batal');
             $table->json('payment_data')->nullable();
             $table->json('transaction_data');
             $table->string('payment_method')->nullable();

@@ -41,11 +41,12 @@ Route::middleware('auth:sanctum')->group(function () {
     /**
      *  METHOD POST
      *  BODY PARAMETER:
-     *      user_id, building_id, end_date(ahkir sewa), note
+     *      building_id, renter_id(id user yg menyewa), start_date,
+     *      end_date, note(catatan optional)
      *
-     *  Untuk menyewakan gedung
+     *  Untuk booking gedung
      */
-    Route::post('/rent/building', [BuildingController::class, 'api_rent_building']);
+    Route::post('/booking/building', [BuildingController::class, 'api_booking_building']);
 
     /**
      *  METHOD GET

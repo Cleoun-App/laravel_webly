@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\Midtrans\CallbackService;
 use App\Models\Transactions\Order;
 use Carbon\Carbon;
+use App\Models\Logger\RentalLog;
+use App\Models\Transactions\Rental;
 
 class PaymentCallbackController extends Controller
 {
@@ -29,14 +31,17 @@ class PaymentCallbackController extends Controller
 
                 if ($callback->isExpire()) {
                     $new_status = 'expired';
+                    $order->deleteTrx();
                 }
 
                 if ($callback->isCancelled()) {
                     $new_status = 'cancel';
+                    $order->deleteTrx();
                 }
 
                 if ($callback->isDenied()) {
                     $new_status = 'cancel';
+                    $order->deleteTrx();
                 }
 
                 if ($callback->isPending()) {
@@ -52,6 +57,12 @@ class PaymentCallbackController extends Controller
                     'payment_method' => $notification->payment_type ?? '',
                     'payment_date' => Carbon::now(),
                 ]);
+
+                $model = $order->transaction;
+
+                if ($model instanceof Rental) {
+                    RentalLog::logTrx($model, $new_status);
+                }
 
                 return response()
                     ->json([

@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\DB;
 use App\Services\Midtrans\CreateSnapTokenService;
 use App\Models\User;
 use App\Models\Transactions\Order;
+use App\Models\Logger\RentalLog;
+use App\Helpers\RentHelper;
 
 class RentForm extends Component
 {
+    use RentHelper;
 
     public $order_id;
 
@@ -133,7 +136,7 @@ class RentForm extends Component
 
         $this->validasiBuilidng($building);
         $this->validasiRenter($user);
-        $this->validasiRentDate();
+        $this->validasiRentDate($this->start_date, $this->end_date);
 
         $this->calculate();
 
@@ -150,7 +153,7 @@ class RentForm extends Component
 
         // Validasi tambahan jika property yang diubah adalah 'tanggalMulai' atau 'tanggalAkhir'
         if ($propertyName === 'start_date' || $propertyName === 'end_date') {
-            $this->validasiRentDate();
+            $this->validasiRentDate($this->start_date, $this->end_date);
         }
     }
 
@@ -170,48 +173,6 @@ class RentForm extends Component
     public function validasiRenter(User $user)
     {
         if ($user instanceof User === false) $this->addError('renter_id', 'Pengguna tidak di temukan!!');
-    }
-
-    public function validasiRentDate()
-    {
-
-        $mulai = new \DateTime($this->start_date);
-        $akhir = new \DateTime($this->end_date);
-        $sekarang = new \DateTime();
-
-        // Validasi tanggal mulai tidak boleh melebihi tanggal sekarang
-        if ($mulai < $sekarang) {
-            $this->addError('start_date', 'Tanggal Mulai Sudah Terlewat Harap Pilih Tanggal Minimal H+1');
-            return;
-        }
-
-        // Validasi tanggal mulai tidak boleh melebihi tanggal sekarang
-        if ($akhir < $sekarang) {
-            $this->addError('end_date', 'Tanggal Ahkir Sudah Terlewat Harap Pilih Tanggal Minimal H+2');
-            return;
-        }
-
-        if (empty($this->start_date)) {
-            $this->addError('star_date', 'Harap masukan tanggal mulai sewa!!');
-            return;
-        }
-
-        if (empty($this->end_date)) {
-            $this->addError('end_date', 'Harap masukan tanggal ahkir sewa!!');
-            return;
-        }
-
-
-        if ($mulai == $akhir) {
-            $this->addError('end_date', 'Tanggal Ahkir Minimal H+1 dari tanggal mulai');
-            return;
-        }
-
-        // Validasi tanggal akhir tidak boleh melebihi tanggal mulai
-        if ($akhir < $mulai) {
-            $this->addError('end_date', 'Tanggal akhir tidak boleh melebihi tanggal mulai');
-            return;
-        }
     }
 
     public function calculate()
@@ -276,7 +237,7 @@ class RentForm extends Component
             $this->order_id = $order_id;
 
             $trx_data['order_id'] = $order_id;
-            $trx_data['gross_amount'] = $this->total_payment;
+            $trx_data['gross_amount'] = $building->price * $this->_duration;
             $trx_data['tax_fee'] = $this->tax_fee;
             $trx_data['adm_fee'] = $this->adm_fee;
             $trx_data['data'] = [
@@ -330,12 +291,13 @@ class RentForm extends Component
 
             $order->save();
 
+            RentalLog::logTrx($trx_rental);
+
             DB::commit();
 
             session()->flash('success', 'Gedung berhasil di-Booking!, silahkan lanjutkan pembayaran');
 
             $this->redirectRoute('adm.building.show.trx', [$order->key]);
-
         } catch (\Throwable $th) {
             DB::rollBack();
 
@@ -345,43 +307,8 @@ class RentForm extends Component
         }
     }
 
-
-
-    private function hitungDurasi($start_date = null, $end_date = null)
-    {
-        $mulai = new \DateTime($start_date ?? $this->start_date);
-        $akhir = new \DateTime($end_date ?? $this->end_date);
-
-        $durasi = $mulai->diff($akhir);
-
-        $hasil = $durasi->days . " hari";
-
-        return [
-            'format' => trim($hasil),
-            'real' => $durasi->days,
-        ];
-    }
-    private function createSnapToken($trx_data, $item_data, $user_data)
-    {
-        $midtrans = new CreateSnapTokenService($trx_data, $item_data, $user_data);
-
-        return $midtrans->getSnapToken();
-    }
-
     private function hasErrors()
     {
         return count($this->getErrorBag()->all()) > 0;
-    }
-
-    private function hitungPajak($rentalAmount)
-    {
-        // Mengatur tarif pajak (misalnya, 10%)
-        $taxRate = 0.08;
-
-        // Melakukan perhitungan pajak
-        $taxAmount = $rentalAmount * $taxRate;
-
-        // Mengembalikan jumlah pajak yang harus dibayar
-        return $taxAmount;
     }
 }

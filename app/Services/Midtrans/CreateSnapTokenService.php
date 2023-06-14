@@ -21,6 +21,7 @@ class CreateSnapTokenService extends Midtrans
     {
         $params = [
             'transaction_details' => [
+                'isaku' => 'abdilah',
                 'order_id' => $this->trx_data['order_id'],
                 'gross_amount' => $this->trx_data['gross_amount'],
                 'transaction_data' => $this->trx_data['data'] ?? [],
@@ -47,6 +48,7 @@ class CreateSnapTokenService extends Midtrans
                 ],
             ],
             'customer_details' => [
+                'isaku' => 'abdilah',
                 'name' => $this->user_data['name'],
                 'email' => $this->user_data['email'],
                 'phone' => $this->user_data['phone'],

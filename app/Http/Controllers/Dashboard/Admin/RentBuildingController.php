@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Dashboard\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Masters\Building;
-use App\Models\Administrations\RentBuilding;
 use App\Models\Transactions\Order;
-use App\Models\User;
+use App\Models\Logger\RentalLog;
+use App\Models\Transactions\Rental;
 
 class RentBuildingController extends Controller
 {
@@ -70,6 +69,12 @@ class RentBuildingController extends Controller
         try {
             $order = Order::where(['key' => $order_key])->firstOrFail();
 
+            $transaction = $order->transaction;
+
+            if ($transaction instanceof Rental) {
+                RentalLog::logTrx($transaction, 'cancel');
+            }
+
             $order->deleteTrx();
 
             $order->delete();
@@ -79,6 +84,42 @@ class RentBuildingController extends Controller
             // ...
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function logTransactions(Request $request)
+    {
+
+        $data['page_title'] = "Log Transaksi";
+        $data['user'] = auth()->user();
+
+        $data['logs'] = RentalLog::where(['type' => 'rent_building'])->orderBy('updated_at', 'DESC')->get();
+
+        return view('dashboard.gedung.ds-admin-logs-transactions', $data);
+    }
+
+    public function logDetail($id)
+    {
+        $rentalLog = RentalLog::find($id);
+
+        $data['page_title'] = "Log informasi";
+        $data['user'] = auth()->user();
+        $data['log'] = $rentalLog;
+
+        return view('dashboard.gedung.ds-admin-log-detail', $data);
+    }
+
+    public function logDel($id)
+    {
+        try {
+
+            $rentalLog = RentalLog::findOrFail($id);
+
+            $rentalLog->delete();
+
+            return redirect()->route('adm.building.log.transactions')->with('success', 'Data log berhasil di-hapus');
+        } catch (\Throwable $th) {
+            return redirect()->route('adm.building.log.transactions')->with('error', $th->getMessage());
         }
     }
 }

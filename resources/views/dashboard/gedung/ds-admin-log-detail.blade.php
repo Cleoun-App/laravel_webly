@@ -57,41 +57,31 @@
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-6">
                                             <label>Nama Penyewa</label>
-                                            <input class="multisteps-form__input form-control" type="text" value="{{ $renter?->name }}" disabled />
+                                            <input class="multisteps-form__input form-control" type="text" value="{{ $log->user->name }}" disabled />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                                             <label>Nomor Telpon</label>
-                                            <input class="multisteps-form__input form-control" type="text" value="{{ $renter?->nomor_telp }}" disabled />
+                                            <input class="multisteps-form__input form-control" type="text" value="{{ $log->user->nomor_telp }}" disabled />
                                         </div>
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-6">
-                                            <label>Nama Gedung</label>
-                                            <input class="multisteps-form__input form-control" type="text" value="{{ $rent_data['item_name'] }}" disabled />
+                                            <label>Biaya Pneyewaan</label>
+                                            <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format($log->rental_cost, 0, ',', '.') }}" disabled />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                                            <label>Harga Gedung</label>
-                                            <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format($rent_data['item_price'] ?? 0, 0, ',', '.') }}" disabled />
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-12 col-sm-6">
                                             <label>Durasi Penyewaan</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ $rent_data['duration'] }}" type="text" disabled />
-                                        </div>
-                                        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                                            <label>Total Harga</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ "RP " .  number_format($order->total_price, 0, ',', '.') }}" type="text" disabled />
+                                            <input class="multisteps-form__input form-control" type="text" value="{{ $log->duration }}" disabled />
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-12 col-sm-6">
                                             <label>Mulai Sewa</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ $rent_data['start_date'] }}" type="text" disabled />
+                                            <input class="multisteps-form__input form-control disabled" value="{{ $log->start_date }}" type="text" disabled />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                                             <label>Ahkir Sewa</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ $rent_data['end_date'] }}" type="text" disabled />
+                                            <input class="multisteps-form__input form-control disabled" value="{{ $log->end_date }}" type="text" disabled />
                                         </div>
                                     </div>
 
@@ -100,58 +90,29 @@
                                     <div class="row mt-2">
                                         <div class="col-12 col-sm-6">
                                             <label>Status Pembayaran</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ $order->payment_status }}" type="text" disabled />
+                                            <input class="multisteps-form__input form-control disabled" value="{{ $log->payment_status }}" type="text" disabled />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                                            <label>Transaksi ID</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ $order->key }}" type="text" disabled />
+                                            <label>Nama Transaksi</label>
+                                            <input class="multisteps-form__input form-control disabled" value="{{ $log->name }}" type="text" disabled />
                                         </div>
                                     </div>
 
                                     <div class="row mt-2">
                                         <div class="col-12 col-sm-6">
                                             <label>Total Pembayaran</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ "RP " .  number_format($order->total_payment, 0, ',', '.') }}" type="text" disabled />
+                                            <input class="multisteps-form__input form-control disabled" value="{{ "RP " .  number_format($log->total_payment, 0, ',', '.') }}" type="text" disabled />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                                             <label>Metode Pembayaran</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ $order->payment_method ?? 'Data Tidak Tersedia' }}" type="text" disabled />
+                                            <input class="multisteps-form__input form-control disabled" value="{{ $log->payment_method ?? 'Data Tidak Tersedia' }}" type="text" disabled />
                                         </div>
                                     </div>
 
-                                    @if (is_array($payment_info) && count($payment_info) > 0)
-                                        <h5 class="font-weight-bolder mt-3">Informasi Pembayaran</h5>
-                                    @endif
-
-                                    <div class="row mt-2">
-                                        @if (is_array($payment_info))
-                                            @foreach ($payment_info as $infoK => $infoV)
-                                            @if (is_array($infoV) === false && in_array($infoK, $sensor_key) === false )
-                                            <div class="col-12">
-                                                <label style="text-transform: capitalize">{{ str_replace("_"," ", $infoK) }}</label>
-                                                <input class="multisteps-form__input form-control disabled" value="{{ $infoV }}" type="text" disabled />
-                                            </div>
-                                            @endif
-                                            @endforeach
-                                        @endif
-                                    </div>
-
                                     <div class="button-row d-flex mt-4">
-                                        <a class="btn bg-gradient-light mb-0" href="{{route('adm.building.transactions')}}" >Kembali</a>
+                                        <a class="btn bg-gradient-light mb-0" href="{{ route('adm.building.log.transactions') }}" >Kembali</a>
                                         <div class="ms-auto">
-                                            @if ($order->payment_status == 'pending')
-                                                <a class="btn bg-gradient-danger mb-0 " href="{{ route('midtrans.trx.cancel', $order->key) }}" onclick="return confirm('Apakah anda yakin ingin membatalkan transaksi ini!!')">Batalkan Transaksi</a>
-                                            @endif
-                                            @if ($order->payment_status == 'waiting')
-                                                <a class="btn bg-gradient-danger mb-0 "  href="{{ route('adm.building.order.delete', $order->key) }}" onclick="return confirm('Apakah anda yakin ingin membatalkan penyewaan ini!!')">Batalkan Penyewaan</a>
-                                                <button type="button" class="btn bg-gradient-success mb-0 " onclick="paynow('{{ $order->snap_token }}', () => { location.replace(location.href) })" >Bayar Sekarang</button>
-                                            @endif
-                                            @if ($order->payment_status == 'success')
-                                                <a class="btn bg-gradient-dark mb-0 " href="{{ route('midtrans.trx.refund', $order->key) }}" >Refund Transaksi</a>
-                                            @endif
-                                            @if ($order->payment_status == 'expired' || $order->payment_status == 'cancel')
-                                                <a class="btn bg-gradient-danger mb-0 " onclick="return confirm('Apakah anda yakin ingin menghapus data transaksi ini!!')" href="{{ route('adm.building.order.delete', $order->key) }}" >Hapus Data Order</a>
-                                            @endif
+                                            <a class="btn bg-gradient-danger mb-0 " href="{{ route('adm.building.log.transaction.delete', $log->id) }}" onclick="return confirm('Yakin ingin menghapus data ini!')" >Hapus Data Log</a>
                                         </div>
                                     </div>
                                 </div>

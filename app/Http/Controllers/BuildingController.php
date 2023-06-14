@@ -9,9 +9,14 @@ use App\Models\User;
 use App\Models\Administrations\RentBuilding;
 use App\Models\Transactions\Rental;
 use Carbon\Carbon;
+use App\Models\Transactions\Order;
+use App\Helpers\RentHelper;
+use App\Models\Logger\RentalLog;
+use Illuminate\Support\Facades\DB;
 
 class BuildingController extends Controller
 {
+    use RentHelper;
 
 
     /**
@@ -19,6 +24,134 @@ class BuildingController extends Controller
      *                      Api section
      *  -------------------------------------------------
      */
+
+
+
+    /**
+     *
+     *  Metode untuk membooking gedung
+     *
+     *  @param Request $request
+     *  parameter request
+     *  building_id, renter_id(id user yg menyewa), start_date,
+     *  end_date, note(catatan optional)
+     *  @return Order $order
+     *  mengembalikan data order jika berhasil
+     *
+     */
+    public function api_booking_building(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $building = Building::findOrFail($request->building_id);
+            $customer = \App\Models\User::findOrFail($request->renter_id);
+
+            if($building->isFree() === false) {
+                throw new \Exception('Gedung telah di-sewakan harap pilih gedung lain!');
+            }
+
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+
+            $result = $this->validasiRentDate($start_date, $end_date);
+
+            if(is_array($result)) {
+                throw new \Exception($result['msg']);
+            }
+
+            $h_duration = $this->hitungDurasi($start_date, $end_date);
+            $real_duration = $h_duration['real'];
+            $format_duration = $h_duration['format'];
+
+            $adm_fee = config('app.adm_fee');
+            $tax_fee = $this->hitungPajak($building->price * $real_duration);
+
+            $rent_building = new RentBuilding();
+            $trx_rental = new Rental();
+            $order = new Order();
+
+            $trx_rental->start_date = $start_date;
+            $trx_rental->end_date = $end_date;
+            $trx_rental->duration = $real_duration;
+            $trx_rental->cost = $building->price * $real_duration + $adm_fee + $tax_fee;
+            $trx_rental->note = $request->note ?? '';
+            $trx_rental->customer_id = $customer->id;
+
+            $trx_rental->save();
+
+            $order->key = uniqid(time());
+            $order->type = 'rent_building';
+            $order->total_price = $building->price * $real_duration + $adm_fee + $tax_fee;;
+            $order->transaction()->associate($trx_rental);
+            $order->user()->associate($customer);
+
+            $trx_data['order_id'] = $order->key;
+            $trx_data['gross_amount'] = $building->price * $real_duration;
+            $trx_data['tax_fee'] = $tax_fee;
+            $trx_data['adm_fee'] = $adm_fee;
+            $trx_data['data'] = [
+                'trx_type' => 'rental',
+                'rent_start' => $start_date,
+                'rent_end' => $end_date,
+                'duration' => $format_duration,
+            ];
+
+            $item_data['name'] = $building->name;
+            $item_data['price'] = $building->price;
+            $item_data['duration'] = $real_duration;
+            $item_data['data'] = [];
+
+            $user_data['name'] = $customer->name;
+            $user_data['email'] = $customer->email;
+            $user_data['phone'] = $customer->nomor_telp;
+
+            $snap_token = $this->createSnapToken($trx_data, $item_data, $user_data);
+
+            // update snap token
+            $order->snap_token = $snap_token;
+
+            $rent_building->rent()->associate($trx_rental);
+            $rent_building->user()->associate($customer);
+            $rent_building->building()->associate($building);
+
+            $rent_building->save();
+
+            $data_order =   [
+                'rent_data' => [
+                    'rent_id' => $rent_building->id,
+                    'rent_model' => get_class($rent_building),
+                    'trx_name' => "Penyewaan Gedung " . $building->name,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
+                    'duration' => $real_duration,
+                    'item_id' => $building->id,
+                    'item_model' => get_class($building),
+                    'item_name' => $building->name,
+                    'item_price' => $building->price,
+                ],
+                'customer_data' => [
+                    'id' => $customer->id,
+                    'name' => $customer->name,
+                    'phone' => $customer->nomor_telp,
+                ]
+            ];
+
+            $order->transaction_data = $data_order;
+
+            $order->save();
+
+            RentalLog::logTrx($trx_rental);
+
+            DB::commit();
+
+            return ResponseFormatter::success($order, 'Gedung berhasil di-booking');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return ResponseFormatter::error([], $th->getMessage());
+        }
+    }
 
     public function api_get_rent_by_param(Request $request)
     {
@@ -52,97 +185,6 @@ class BuildingController extends Controller
             return ResponseFormatter::success($result, 'Berhasil mendapatkan data sewa gedung');
 
             // ...
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error([], $th->getMessage());
-        }
-    }
-
-
-    /**
-     *  @deprecated
-     */
-    public function api_pay_rent(Request $request)
-    {
-        try {
-            $payment_data = $request->payment_data;
-            $payment_method = $request->payment_method;
-            $rental_id = $request->rental_id;
-            $penalty = $request->penalty ?? 0;
-            $adm_fee = $request->adm_fee ?? 0;
-            $cost = $request->cost;
-
-            $total_payment = $cost + $adm_fee + $penalty;
-
-            $rental = Rental::findOrFail($rental_id);
-
-            $rent_building = RentBuilding::where('rent_id', $rental->id)->first();
-
-            $user = $rent_building->user;
-
-            $building = $rent_building->building;
-
-            $status = 'success';
-
-            if ($total_payment < $rental->cost) {
-                $status = "pending";
-            }
-
-            $rental->update([
-                'payment_data' => $payment_data,
-                'payment_method' => $payment_method,
-                'payment_date' => Carbon::now(),
-                'total_payment' => $total_payment,
-                'status' => $status,
-            ]);
-
-            return ResponseFormatter::success([
-                'title' =>  'Transaksi Pembayaran Penyewaan Gedung',
-                'item' => $building->name,
-                'item_desc' => $building->description,
-                'item_cost' => $building->price,
-                'adm_fee' => $adm_fee,
-                'penalty' => $penalty,
-                'total_payment' => $total_payment,
-                'actual_cost' => $rental->cost,
-                'customer_name' => $user->name,
-            ], 'Pembayaran berhasil di lakukan');
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error([], $th->getMessage());
-        }
-    }
-
-    public function api_rent_building(Request $request)
-    {
-        try {
-            $user_id = $request->user_id;
-            $building_id = $request->building_id;
-
-            $is_rented = RentBuilding::isBuildingRented($building_id);
-
-            if ($is_rented) {
-                throw new \Exception('Gedung sudah di-sewakan');
-            }
-
-            if (empty($user_id) || empty($building_id)) {
-                throw new \Exception('Harap masukan id user dan id gedung');
-            }
-
-            // Pastikan user id dan building id ada
-            $user = User::find($user_id);
-            $building = Building::find($building_id);
-
-            $rental =  RentContrller::api_rent($request, $user, $building->price);
-
-            $rent_data = RentBuilding::create([
-                'rent_id' => $rental->id,
-                'building_id' => $building->id,
-                'user_id' => $user->id,
-            ]);
-
-            $rent_data->building = $building;
-            $rent_data->rent = $rental;
-
-            return ResponseFormatter::success($rent_data, 'Gedung berhasil di-sewa');
         } catch (\Throwable $th) {
             return ResponseFormatter::error([], $th->getMessage());
         }

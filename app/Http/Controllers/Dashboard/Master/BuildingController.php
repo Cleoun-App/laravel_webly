@@ -29,7 +29,7 @@ class BuildingController extends Controller
         try {
 
             $request->validate([
-                'nama' => ['required', 'string', 'min:3', 'max:30'],
+                'nama' => ['required', 'string', 'min:3', 'max:100'],
                 'lokasi' => ['required', 'string', 'min:5', 'max:120'],
                 'kapasitas' => ['required', 'integer', 'min:1'],
                 'tipe' => ['required', 'min:3', 'max:120'],
@@ -75,7 +75,7 @@ class BuildingController extends Controller
         try {
 
             $request->validate([
-                'nama' => ['required', 'string', 'min:3', 'max:30'],
+                'nama' => ['required', 'string', 'min:3', 'max:100'],
                 'lokasi' => ['required', 'string', 'min:5', 'max:120'],
                 'kapasitas' => ['required', 'integer', 'min:1'],
                 'tipe' => ['required', 'min:3', 'max:120'],
