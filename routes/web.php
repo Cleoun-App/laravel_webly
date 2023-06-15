@@ -19,6 +19,7 @@ use function GuzzleHttp\json_encode;
 use App\Http\Controllers\PaymentCallbackController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\Dashboard\Admin\RentCanteenController;
+use App\Http\Controllers\Dashboard\Admin\TransactionLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -142,6 +143,14 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
     Route::get('/master/driver/table', [DriverController::class, 'driverTablePage'])->name('driverTablePage');
 
+    /**
+     *
+     * Route for transaction logger
+     *
+     */
+    Route::get('/administration/log/{log_type}/transactions', [TransactionLogController::class, 'logTransactions'])->name('adm.log.transactions');
+    Route::get('/administration/log/{log_type}/transaction/delete/{id}', [TransactionLogController::class, 'logDel'])->name('adm.log.transaction.delete');
+    Route::get('/administration/log/transaction/{id}', [TransactionLogController::class, 'logDetail'])->name('adm.log.detail');
 
     /**
      *  Administrasi
@@ -152,9 +161,6 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/administration/building/transactions', [RentBuildingController::class, 'transactions'])->name('adm.building.transactions');
     Route::get('/administration/building/transactions/{id}', [RentBuildingController::class, 'showTrx'])->name('adm.building.show.trx');
     Route::get('/administration/building/transactions/{id}/delete', [RentBuildingController::class, 'delete'])->name('adm.building.order.delete');
-    Route::get('/administration/building/log/transactions', [RentBuildingController::class, 'logTransactions'])->name('adm.building.log.transactions');
-    Route::get('/administration/building/log/transaction/delete/{id}', [RentBuildingController::class, 'logDel'])->name('adm.building.log.transaction.delete');
-    Route::get('/administration/building/log/transaction/{id}', [RentBuildingController::class, 'logDetail'])->name('adm.building.log.detail');
 
     /**
      *  Administrasi
@@ -165,15 +171,10 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/administration/tenant-canteen/transactions', [RentCanteenController::class, 'transactions'])->name('adm.canteen.transactions');
     Route::get('/administration/tenant-canteen/transactions/{id}', [RentCanteenController::class, 'showTrx'])->name('adm.canteen.show.trx');
     Route::get('/administration/tenant-canteen/transactions/{id}/delete', [RentCanteenController::class, 'delete'])->name('adm.canteen.order.delete');
-    Route::get('/administration/tenant-canteen/log/transactions', [RentCanteenController::class, 'logTransactions'])->name('adm.canteen.log.transactions');
-    Route::get('/administration/tenant-canteen/log/transaction/delete/{id}', [RentCanteenController::class, 'logDel'])->name('adm.canteen.log.transaction.delete');
-    Route::get('/administration/tenant-canteen/log/transaction/{id}', [RentCanteenController::class, 'logDetail'])->name('adm.canteen.log.detail');
-
 
     /**
      *  Midtrans transaction methods
      */
-
      Route::get('/administration/transaction/{id}/cancel', [MidtransController::class, 'cancel'])->name('midtrans.trx.cancel');
      Route::get('/administration/transaction/{id}/refund', [MidtransController::class, 'refund'])->name('midtrans.trx.refund');
 

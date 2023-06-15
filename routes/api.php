@@ -30,7 +30,6 @@ Route::post('/change-password', [AuthController::class, 'change_password']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-
     /**
      *  --------------------------------------
      *          START - RENTBUILDING

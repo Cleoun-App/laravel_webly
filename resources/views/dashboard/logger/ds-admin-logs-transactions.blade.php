@@ -57,7 +57,7 @@
                                 <tr>
                                     <td class="text-sm font-weight-normal">{{ $log->log_id }}</td>
                                     <td class="text-sm font-weight-normal">{{ $log->start_date }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $log->duration }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $log->duration . ' Hari' }}</td>
                                     <td class="text-sm font-weight-normal">{{ "RP " .  number_format($log->total_payment ?? 0, 0, ',', '.') }}</td>
                                     <td class="text-sm font-weight-normal">
                                         {{ $log->user->name }}
@@ -83,7 +83,7 @@
                                         @endif
                                     </td>
                                     <td class="text-sm font-weight-normal">
-                                        <a class="btn badge badge-info m-0" href="{{ route('adm.building.log.detail', $log->id) }}">Detail</a>
+                                        <a class="btn badge badge-info m-0" href="{{ route('adm.log.detail', $log->id) }}">Detail</a>
                                     </td>
                                 </tr>
                             @endforeach

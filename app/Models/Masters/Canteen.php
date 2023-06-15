@@ -17,8 +17,6 @@ class Canteen extends Model
         'price', 'description',
     ];
 
-
-
     public function rent()
     {
         return $this->hasOne(RentCanteen::class, 'canteen_id');

@@ -238,7 +238,7 @@
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="{{ route('adm.building.log.transactions') }}">
+                                <a class="nav-link" href="{{ route('adm.log.transactions', ['log_type' => 'rent_building']) }}">
                                     <span class="sidenav-mini-icon"> S </span>
                                     <span class="sidenav-normal">Log Transaksi </span>
                                 </a>
@@ -352,7 +352,7 @@
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="{{ route('adm.canteen.log.transactions') }}">
+                                <a class="nav-link" href="{{ route('adm.log.transactions', ['log_type' => 'rent_canteen']) }}">
                                     <span class="sidenav-mini-icon"> TX </span>
                                     <span class="sidenav-normal"> Log Transaksi </span>
                                 </a>
@@ -383,19 +383,19 @@
                     <div class="collapse " id="penyewaan_kendaraan">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="/add_penyewa.php">
+                                <a class="nav-link" href="#">
                                     <span class="sidenav-mini-icon"> TP </span>
                                     <span class="sidenav-normal"> Sewa Kendaraan </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/tabel_kendaraan.php">
+                                <a class="nav-link" href="#">
                                     <span class="sidenav-mini-icon"> TK </span>
                                     <span class="sidenav-normal"> Transaksi Kendaraan </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/log_transaksi.php">
+                                <a class="nav-link" href="{{ route('adm.log.transactions', ['log_type' => 'rent_car']) }}">
                                     <span class="sidenav-mini-icon"> TX </span>
                                     <span class="sidenav-normal"> Log Transaksi </span>
                                 </a>

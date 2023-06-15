@@ -19,8 +19,30 @@ class Car extends Model
         'stnk', 'description', 'price', 'slug', 'image',
     ];
 
-    public function rent_car()
+    public function rent()
     {
         return $this->hasOne(RentCar::class, 'car_id');
+    }
+
+    public function scopeGetAvailableCars($_) : array
+    {
+        $cars = self::get()->all();
+
+        $_cars = [];
+
+        foreach ($cars as $car) {
+            if ($car->isFree()) {
+                $_cars[] = $car;
+            }
+        }
+
+        return $_cars;
+    }
+
+    public function isFree(): bool
+    {
+        if ($this->rent instanceof RentCar) return false;
+
+        return true;
     }
 }

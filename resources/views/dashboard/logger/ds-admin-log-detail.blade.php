@@ -90,8 +90,8 @@
                                             <input class="multisteps-form__input form-control disabled" value="{{ $log->payment_status }}" type="text" disabled />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                                            <label>Nama Transaksi</label>
-                                            <input class="multisteps-form__input form-control disabled" value="{{ $log->name }}" type="text" disabled />
+                                            <label>Transaksi ID</label>
+                                            <input class="multisteps-form__input form-control disabled" value="{{ $log->log_id }}" type="text" disabled />
                                         </div>
                                     </div>
 
@@ -107,9 +107,9 @@
                                     </div>
 
                                     <div class="button-row d-flex mt-4">
-                                        <a class="btn bg-gradient-light mb-0" href="{{ route('adm.canteen.log.transactions') }}" >Kembali</a>
+                                        <a class="btn bg-gradient-light mb-0" href="{{ route('adm.log.transactions', $log->type) }}" >Kembali</a>
                                         <div class="ms-auto">
-                                            <a class="btn bg-gradient-danger mb-0 " href="{{ route('adm.canteen.log.transaction.delete', $log->id) }}" onclick="return confirm('Yakin ingin menghapus data ini!')" >Hapus Data Log</a>
+                                            <a class="btn bg-gradient-danger mb-0 " href="{{ route('adm.log.transaction.delete', [$log->type, $log->id]) }}" onclick="return confirm('Yakin ingin menghapus data ini!')" >Hapus Data Log</a>
                                         </div>
                                     </div>
                                 </div>
