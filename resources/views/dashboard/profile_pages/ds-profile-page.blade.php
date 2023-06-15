@@ -7,7 +7,7 @@
 
 <!-- Start Content -->
 
-    <div class="container-fluid mt-4">
+    <div class="container-fluid mt-4" style="height: 5vh;">
         <div class="row align-items-center">
             <div class="col-lg-5 col-sm-8">
                 <div class="nav-wrapper position-relative end-0">

@@ -16,9 +16,9 @@
                     <div class="col-12 col-lg-8 mx-auto my-5">
                         <div class="multisteps-form__progress">
                             <button class="multisteps-form__progress-btn js-active" type="button" title="a" disabled>
-                                <span>Form Penyewaan Gedung</span>
+                                <span>Form Penyewaan Tenant Kantin</span>
                             </button>
-                            <button class="multisteps-form__progress-btn js-active" disabled type="button" title="Address">Booking Gedung</button>
+                            <button class="multisteps-form__progress-btn js-active" disabled type="button" title="Address">Form Booking</button>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                 <!--form panels-->
                 <div class="row">
                     <div class="col-12 col-lg-8 m-auto">
-                        @livewire('dashboard.rent-building-form')
+                        @livewire('dashboard.rent-canteen-form')
                     </div>
                 </div>
             </div>

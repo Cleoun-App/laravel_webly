@@ -45,18 +45,19 @@
                         <span style="color:#ff3131; font-size: 13px;">{{$message}}</span>
                     @enderror
                 </div>
-                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                {!! $items !!}
+                {{-- <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                     <label class="mt-0">Daftar Gedung Tersedia</label>
-                    <select class="form-control" wire:model="building_id" id="choices-category">
+                    <select class="form-control" wire:model="item_id" id="choices-category">
                         <option default value="7">Pilih Gedung</option>
-                        @foreach ($buildings as $building_)
-                        <option value="{{ $building_->id }}">{{ $building_->name }}</option>
+                        @foreach ($buildings as $item_)
+                        <option value="{{ $item_->id }}">{{ $item_->name }}</option>
                         @endforeach
                     </select>
-                    @error('building_id')
+                    @error('item_id')
                         <span style="color:#ff3131; font-size: 13px;">{{$message}}</span>
                     @enderror
-                </div>
+                </div> --}}
             </div>
             <div class="row mt-2">
                 <div class="col-12 col-sm-6">
@@ -83,8 +84,8 @@
                     @enderror
                 </div> --}}
                 <div class="col-12">
-                    <label>Harga Gedung</label>
-                    <input class="multisteps-form__input form-control disabled" disabled type="text" value="{{ $building_price }}" placeholder="Harga tenan" />
+                    <label>Harga Item</label>
+                    <input class="multisteps-form__input form-control disabled" disabled type="text" value="{{ $item_price }}" placeholder="Harga tenan" />
                 </div>
 
                 <div class="col-12">
@@ -139,12 +140,12 @@
             </div>
             <div class="row mt-3">
                 <div class="col-12 col-sm-6">
-                    <label>Nama Gedung</label>
-                    <input class="multisteps-form__input form-control" type="text" value="{{ $building?->name }}" disabled/>
+                    <label>Nama {{ $context }}</label>
+                    <input class="multisteps-form__input form-control" type="text" value="{{ $item?->name }}" disabled/>
                 </div>
                 <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                    <label>Harga Gedung</label>
-                    <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format($building?->price ?? 0, 0, ',', '.') }}" disabled/>
+                    <label>Harga {{ $context }}</label>
+                    <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format($item?->price ?? 0, 0, ',', '.') }}" disabled/>
                 </div>
             </div>
             <div class="row mt-3">

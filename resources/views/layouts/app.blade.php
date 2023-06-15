@@ -340,19 +340,19 @@
                     <div class="collapse " id="tenan_kantin">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="/add_penyewa.php">
+                                <a class="nav-link" href="{{ route('adm.canteen.rent') }}">
                                     <span class="sidenav-mini-icon"> TP </span>
                                     <span class="sidenav-normal"> Sewa Tenant </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/approve_tx_tenan.php">
+                                <a class="nav-link" href="{{ route('adm.canteen.transactions') }}">
                                     <span class="sidenav-mini-icon"> AB </span>
                                     <span class="sidenav-normal"> Transaksi Penyewaan </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="/log_transaksi.php">
+                                <a class="nav-link" href="{{ route('adm.canteen.log.transactions') }}">
                                     <span class="sidenav-mini-icon"> TX </span>
                                     <span class="sidenav-normal"> Log Transaksi </span>
                                 </a>

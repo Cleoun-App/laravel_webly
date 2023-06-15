@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\Admin\RentBuildingController;
 use function GuzzleHttp\json_encode;
 use App\Http\Controllers\PaymentCallbackController;
 use App\Http\Controllers\MidtransController;
+use App\Http\Controllers\Dashboard\Admin\RentCanteenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,6 +155,20 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/administration/building/log/transactions', [RentBuildingController::class, 'logTransactions'])->name('adm.building.log.transactions');
     Route::get('/administration/building/log/transaction/delete/{id}', [RentBuildingController::class, 'logDel'])->name('adm.building.log.transaction.delete');
     Route::get('/administration/building/log/transaction/{id}', [RentBuildingController::class, 'logDetail'])->name('adm.building.log.detail');
+
+    /**
+     *  Administrasi
+     *
+     *  Url administrasi penyewaan tenant
+     */
+    Route::get('/administration/tenant-canteen/rent', [RentCanteenController::class, 'rentCanteen'])->name('adm.canteen.rent');
+    Route::get('/administration/tenant-canteen/transactions', [RentCanteenController::class, 'transactions'])->name('adm.canteen.transactions');
+    Route::get('/administration/tenant-canteen/transactions/{id}', [RentCanteenController::class, 'showTrx'])->name('adm.canteen.show.trx');
+    Route::get('/administration/tenant-canteen/transactions/{id}/delete', [RentCanteenController::class, 'delete'])->name('adm.canteen.order.delete');
+    Route::get('/administration/tenant-canteen/log/transactions', [RentCanteenController::class, 'logTransactions'])->name('adm.canteen.log.transactions');
+    Route::get('/administration/tenant-canteen/log/transaction/delete/{id}', [RentCanteenController::class, 'logDel'])->name('adm.canteen.log.transaction.delete');
+    Route::get('/administration/tenant-canteen/log/transaction/{id}', [RentCanteenController::class, 'logDetail'])->name('adm.canteen.log.detail');
+
 
     /**
      *  Midtrans transaction methods

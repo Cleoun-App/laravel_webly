@@ -8,26 +8,25 @@ use App\Models\Transactions\Order;
 use App\Models\Logger\RentalLog;
 use App\Models\Transactions\Rental;
 
-class RentBuildingController extends Controller
+class RentCanteenController extends Controller
 {
     //
 
-    public function rentBuilding(Request $request)
+    public function rentCanteen(Request $request)
     {
-        $data['page_title'] = "Sewa Gedung";
+        $data['page_title'] = "Form Penyewaan Kantin";
         $data['user'] = auth()->user();
 
-        return view('dashboard.gedung.ds-admin-rent-building', $data);
+        return view('dashboard.canteen.ds-admin-rent-canteen', $data);
     }
 
     public function transactions()
     {
-
-        $data['page_title'] = "Tabel Transaksi Penyewaan Gedung";
+        $data['page_title'] = "Tabel Transaksi Penyewaan Kantin";
         $data['user'] = auth()->user();
-        $data['orders'] = Order::where(['type' => 'rent_building'])->orderBy('created_at', 'DESC')->get();
+        $data['orders'] = Order::where(['type' => 'rent_canteen'])->orderBy('created_at', 'DESC')->get();
 
-        return view('dashboard.gedung.ds-admin-transactions', $data);
+        return view('dashboard.canteen.ds-admin-transactions', $data);
     }
 
     public function unBooking($order_key)
@@ -39,7 +38,7 @@ class RentBuildingController extends Controller
 
             $order->delete();
 
-            return redirect()->route('adm.building.transactions')->with('success', 'Transaksi berhasil di-batalkan dan gedung di-unbooking');
+            return redirect()->route('adm.canteen.transactions')->with('success', 'Transaksi berhasil di-batalkan dan kantin di-unbooking');
 
             // ...
         } catch (\Throwable $th) {
@@ -49,7 +48,7 @@ class RentBuildingController extends Controller
 
     public function showTrx($tr_id)
     {
-        $data['page_title'] = "Detail Transaksi";
+        $data['page_title'] = "Detail Penyewaan Kantin";
         $data['user'] = auth()->user();
 
         $order = Order::where(['key' => $tr_id])->firstOrFail();
@@ -61,7 +60,7 @@ class RentBuildingController extends Controller
 
         $data['sensor_key'] = ['merchant_id', 'order_id', 'signature_key', 'transaction_id', 'fraud_status'];
 
-        return view('dashboard.gedung.ds-admin-detail-transaction', $data);
+        return view('dashboard.canteen.ds-admin-detail-transaction', $data);
     }
 
     public function delete($order_key)
@@ -79,7 +78,7 @@ class RentBuildingController extends Controller
 
             $order->delete();
 
-            return redirect()->route('adm.building.transactions')
+            return redirect()->route('adm.canteen.transactions')
                 ->with('success', 'Order dengan id "' . $order_key . '" Berhasil di hapus!!');
             // ...
         } catch (\Throwable $th) {
@@ -90,23 +89,23 @@ class RentBuildingController extends Controller
     public function logTransactions(Request $request)
     {
 
-        $data['page_title'] = "Log Transaksi";
+        $data['page_title'] = "Log Transaksi Penyewaan Kantin";
         $data['user'] = auth()->user();
 
-        $data['logs'] = RentalLog::where(['type' => 'rent_building'])->orderBy('updated_at', 'DESC')->get();
+        $data['logs'] = RentalLog::where(['type' => 'rent_canteen'])->orderBy('updated_at', 'DESC')->get();
 
-        return view('dashboard.gedung.ds-admin-logs-transactions', $data);
+        return view('dashboard.canteen.ds-admin-logs-transactions', $data);
     }
 
     public function logDetail($id)
     {
         $rentalLog = RentalLog::find($id);
 
-        $data['page_title'] = "Log informasi";
+        $data['page_title'] = "Log Informasi Transaksi";
         $data['user'] = auth()->user();
         $data['log'] = $rentalLog;
 
-        return view('dashboard.gedung.ds-admin-log-detail', $data);
+        return view('dashboard.canteen.ds-admin-log-detail', $data);
     }
 
     public function logDel($id)
@@ -117,9 +116,9 @@ class RentBuildingController extends Controller
 
             $rentalLog->delete();
 
-            return redirect()->route('adm.building.log.transactions')->with('success', 'Data log berhasil di-hapus');
+            return redirect()->route('adm.canteen.log.transactions')->with('success', 'Data log berhasil di-hapus');
         } catch (\Throwable $th) {
-            return redirect()->route('adm.building.log.transactions')->with('error', $th->getMessage());
+            return redirect()->route('adm.canteen.log.transactions')->with('error', $th->getMessage());
         }
     }
 }
