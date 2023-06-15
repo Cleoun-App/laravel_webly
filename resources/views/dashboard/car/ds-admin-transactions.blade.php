@@ -40,27 +40,30 @@
                     <table class="table table-flush" id="datatable-search">
                         <thead class="thead-light">
                             <tr>
-                                <th>Transaksi ID</th>
+                                <th>Nama Transaksi</th>
                                 <th>Tgl Sewa</th>
                                 <th>Periode</th>
-                                <th>Total Transaksi</th>
+                                <th>Harga</th>
                                 <th>Penyewa</th>
                                 <th>Status Transaksi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($logs as $log)
+                            @foreach ($orders as $order)
                                 @php
-                                 $payment_status = $log->payment_status;
+                                    $payment_status = $order->payment_status;
+
+                                    $rent_data = $order->txData('rent_data');
+                                    $customer_data = $order->txData('customer_data');
                                 @endphp
                                 <tr>
-                                    <td class="text-sm font-weight-normal">{{ $log->log_id }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $log->start_date }}</td>
-                                    <td class="text-sm font-weight-normal">{{ $log->duration . ' Hari' }}</td>
-                                    <td class="text-sm font-weight-normal">{{ "RP " .  number_format($log->total_payment ?? 0, 0, ',', '.') }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $rent_data['trx_name'] }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $rent_data['start_date'] }}</td>
+                                    <td class="text-sm font-weight-normal">{{ $rent_data['duration'] }}</td>
+                                    <td class="text-sm font-weight-normal">{{ "RP " .  number_format($order->total_price ?? 0, 0, ',', '.') }}</td>
                                     <td class="text-sm font-weight-normal">
-                                        {{ $log->user->name }}
+                                        {{ $customer_data['name'] }}
                                     </td>
                                     <td class="text-sm font-weight-normal">
                                         @if (strtolower($payment_status) == 'success')
@@ -83,7 +86,7 @@
                                         @endif
                                     </td>
                                     <td class="text-sm font-weight-normal">
-                                        <a class="btn badge badge-info m-0" href="{{ route('adm.canteen.log.detail', $log->id) }}">Detail</a>
+                                        <a class="btn badge badge-info m-0" href="{{ route('adm.canteen.show.trx', $order->key) }}">Detail</a>
                                     </td>
                                 </tr>
                             @endforeach

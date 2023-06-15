@@ -183,6 +183,17 @@ Route::middleware('auth:sanctum')->group(function () {
      */
 
 
+
+    /**
+     *  METHOD POST
+     *  BODY PARAMETER:
+     *      building_id, renter_id(id user yg menyewa), start_date,
+     *      end_date, note(catatan optional)
+     *
+     *  Untuk booking gedung
+     */
+    Route::post('/booking/canteen', [CanteenController::class, 'api_booking_canteen']);
+
     /**
      *  METHOD POST
      *  BODY PARAMETER:
