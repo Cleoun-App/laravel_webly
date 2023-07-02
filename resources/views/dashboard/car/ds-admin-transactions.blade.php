@@ -86,7 +86,7 @@
                                         @endif
                                     </td>
                                     <td class="text-sm font-weight-normal">
-                                        <a class="btn badge badge-info m-0" href="{{ route('adm.canteen.show.trx', $order->key) }}">Detail</a>
+                                        <a class="btn badge badge-info m-0" href="{{ route('adm.car.show.trx', $order->key) }}">Detail</a>
                                     </td>
                                 </tr>
                             @endforeach

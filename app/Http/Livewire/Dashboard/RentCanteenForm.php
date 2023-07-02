@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Dashboard;
 
+use App\Helpers\RentHelper;
 use App\Models\Masters\Canteen;
 use App\Models\Administrations\RentCanteen;
 use App\Models\Logger\RentalLog;
@@ -11,6 +12,7 @@ use App\Models\Transactions\Rental;
 
 class RentCanteenForm extends RentForm
 {
+    use RentHelper;
 
     public function mount() {
         $this->context = "Kantin";

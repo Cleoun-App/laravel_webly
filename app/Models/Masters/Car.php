@@ -12,7 +12,7 @@ class Car extends Model
 
     protected $table = "master_cars";
 
-    protected $with = ['rent_car'];
+    protected $with = ['rent'];
 
     protected $fillable = [
         'name', 'type', 'km', 'license_plate',

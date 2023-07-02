@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Transactions\Rental;
 use App\Models\Masters\Car;
+use App\Models\Masters\Driver;
 
 class RentCar extends Model
 {
@@ -31,6 +32,12 @@ class RentCar extends Model
     public function car()
     {
         return $this->belongsTo(Car::class, 'car_id');
+    }
+
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id');
     }
 
     public function scopeIsCarRented($_, $car_id) : bool

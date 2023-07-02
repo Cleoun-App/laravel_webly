@@ -148,6 +148,21 @@
                     <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format($item?->price ?? 0, 0, ',', '.') }}" disabled/>
                 </div>
             </div>
+            @php
+                $driver = \App\Models\Masters\Driver::find($driver_id);
+            @endphp
+            @if ($context == 'Mobil' && $driver instanceOf \App\Models\Masters\Driver)
+                <div class="row mt-3">
+                    <div class="col-12 col-sm-6">
+                        <label>Nama Driver</label>
+                        <input class="multisteps-form__input form-control" type="text" value="{{ $driver?->name }}" disabled/>
+                    </div>
+                    <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                        <label>Harga Driver Per-Durasi</label>
+                        <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format(($driver_cost ?? 0) * $_duration, 0, ',', '.') }}" disabled/>
+                    </div>
+                </div>
+            @endif
             <div class="row mt-3">
                 <div class="col-12 col-sm-6">
                     <label>Biaya Administrasi</label>

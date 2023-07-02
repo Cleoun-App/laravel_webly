@@ -34,4 +34,21 @@ class Driver extends Model
 
         return true;
     }
+
+
+
+    public function scopeGetAvailableDrivers($_) : array
+    {
+        $drivers = self::get()->all();
+
+        $_drivers = [];
+
+        foreach ($drivers as $dv) {
+            if ($dv->isFree()) {
+                $_drivers[] = $dv;
+            }
+        }
+
+        return $_drivers;
+    }
 }

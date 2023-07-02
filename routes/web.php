@@ -19,6 +19,7 @@ use function GuzzleHttp\json_encode;
 use App\Http\Controllers\PaymentCallbackController;
 use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\Dashboard\Admin\RentCanteenController;
+use App\Http\Controllers\Dashboard\Admin\RentCarController;
 use App\Http\Controllers\Dashboard\Admin\TransactionLogController;
 
 /*
@@ -171,6 +172,17 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
     Route::get('/administration/tenant-canteen/transactions', [RentCanteenController::class, 'transactions'])->name('adm.canteen.transactions');
     Route::get('/administration/tenant-canteen/transactions/{id}', [RentCanteenController::class, 'showTrx'])->name('adm.canteen.show.trx');
     Route::get('/administration/tenant-canteen/transactions/{id}/delete', [RentCanteenController::class, 'delete'])->name('adm.canteen.order.delete');
+
+    /**
+     *  Administrasi
+     *
+     *  Url administrasi penyewaan mobil
+     */
+    Route::get('/administration/car/rent', [RentCarController::class, 'rentCar'])->name('adm.car.rent');
+    Route::get('/administration/car/transactions', [RentCarController::class, 'transactions'])->name('adm.car.transactions');
+    Route::get('/administration/car/transactions/{id}', [RentCarController::class, 'showTrx'])->name('adm.car.show.trx');
+    Route::get('/administration/car/transactions/{id}/delete', [RentCarController::class, 'delete'])->name('adm.car.order.delete');
+
 
     /**
      *  Midtrans transaction methods

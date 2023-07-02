@@ -383,13 +383,13 @@
                     <div class="collapse " id="penyewaan_kendaraan">
                         <ul class="nav ms-4 ps-3">
                             <li class="nav-item ">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ route('adm.car.rent') }}">
                                     <span class="sidenav-mini-icon"> TP </span>
                                     <span class="sidenav-normal"> Sewa Kendaraan </span>
                                 </a>
                             </li>
                             <li class="nav-item ">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link" href="{{ route('adm.car.transactions') }}">
                                     <span class="sidenav-mini-icon"> TK </span>
                                     <span class="sidenav-normal"> Transaksi Kendaraan </span>
                                 </a>

@@ -31,6 +31,10 @@ class RentForm extends Component
 
     public $context;
 
+    // driver attr
+    public $driver_id;
+    public $driver_cost;
+
     public function mount()
     {
         $this->adm_fee = config('app.adm_fee');
@@ -159,9 +163,15 @@ class RentForm extends Component
         try {
             $this->validate();
 
-            $item = $this->item_model();
-
             $_duration = $this->hitungDurasi();
+
+            $dv_cost = $this->driver_cost;
+
+            if($dv_cost !== null) {
+                $dv_cost = $dv_cost * $_duration['real'];
+            }
+
+            $item = $this->item_model();
 
             $rent_cost = $item->price * $_duration['real'];
             $tax_fee = $this->hitungPajak($rent_cost);
@@ -170,7 +180,7 @@ class RentForm extends Component
 
             $this->duration = $_duration['format'];
             $this->_duration = $_duration['real'];
-            $this->total_payment = $rent_cost + $tax_fee + $this->adm_fee;
+            $this->total_payment = $rent_cost + $tax_fee + $this->adm_fee + $dv_cost;
 
             $this->renter = \App\Models\User::find($this->renter_id);
             $this->item = $item;

@@ -2,15 +2,19 @@
 
 namespace App\Http\Livewire\Dashboard;
 
+use App\Helpers\RentHelper;
 use App\Models\Administrations\RentCar;
 use App\Models\Logger\RentalLog;
 use Illuminate\Support\Facades\DB;
 use App\Models\Transactions\Order;
 use App\Models\Transactions\Rental;
 use App\Models\Masters\Car;
+use App\Models\Masters\Driver;
+use Illuminate\Database\Eloquent\Model;
 
-class RentCar extends RentForm
+class RentCarForm extends RentForm
 {
+    use RentHelper;
 
     public function mount() {
         $this->context = "Mobil";
@@ -23,9 +27,25 @@ class RentCar extends RentForm
 
         $view = view('livewire.dashboard.rent-car-form', [
             'cars'  => Car::getAvailableCars(),
+            'drivers' => Driver::getAvailableDrivers(),
+            'driver_cost' => $this->driver_cost,
         ]);
 
         return parent::render($view->render());
+    }
+
+
+    public function updatedDriverId($value)
+    {
+        try {
+            $dv = Driver::findOrFail($value);
+
+            $dv_cost = ($dv->price ?? 120000);
+
+            $this->driver_cost = $dv_cost;
+        } catch (\Throwable $th) {
+            $this->driver_cost = 0;
+        }
     }
 
     public function updatedItemId($value)
@@ -44,8 +64,11 @@ class RentCar extends RentForm
         try {
             DB::beginTransaction();
 
-            $car = Car::find($this->item_id);
-            $customer = \App\Models\User::find($this->renter_id);
+            $car = Car::findOrFail($this->item_id);
+            $customer = \App\Models\User::findOrFail($this->renter_id);
+            $driver = Driver::find($this->driver_id);
+
+            $dv_cost = $this->driver_cost * $this->_duration;
 
             $rent_car = new RentCar();
             $trx_rental = new Rental();
@@ -85,6 +108,10 @@ class RentCar extends RentForm
             $item_data['price'] = $car->price;
             $item_data['duration'] = $this->_duration;
             $item_data['data'] = [];
+            $item_data['driver_data'] = [
+                'name' => $driver?->name,
+                'cost' => $dv_cost,
+            ];
 
             $user_data['name'] = $customer->name;
             $user_data['email'] = $customer->email;
@@ -98,6 +125,7 @@ class RentCar extends RentForm
             $rent_car->rent()->associate($trx_rental);
             $rent_car->user()->associate($customer);
             $rent_car->car()->associate($car);
+            $rent_car->driver()->associate($driver);
 
             $rent_car->save();
 
@@ -107,7 +135,7 @@ class RentCar extends RentForm
                 'rent_data' => [
                     'rent_id' => $rent_car->id,
                     'rent_model' => get_class($rent_car),
-                    'trx_name' => "Penyewaan Gedung " . $car->name,
+                    'trx_name' => "Penyewaan Mobil " . $car->name,
                     'start_date' => $this->start_date,
                     'end_date' => $this->end_date,
                     'duration' => $this->duration,
@@ -115,6 +143,8 @@ class RentCar extends RentForm
                     'item_model' => get_class($car),
                     'item_name' => $car->name,
                     'item_price' => $car->price,
+                    'driver_name' => $driver?->name,
+                    'driver_cost' => $dv_cost,
                 ],
                 'customer_data' => [
                     'id' => $customer->id,
@@ -129,7 +159,7 @@ class RentCar extends RentForm
 
             DB::commit();
 
-            session()->flash('success', 'Kantin berhasil di-Booking!, silahkan lanjutkan pembayaran');
+            session()->flash('success', 'Mobil berhasil di-Booking!, silahkan lanjutkan pembayaran');
 
             $this->redirectRoute('adm.car.show.trx', [$order->key]);
         } catch (\Throwable $th) {

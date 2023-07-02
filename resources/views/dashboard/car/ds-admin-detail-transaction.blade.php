@@ -63,12 +63,22 @@
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-6">
-                                            <label>Nama Kantin</label>
+                                            <label>Nama Mobils</label>
                                             <input class="multisteps-form__input form-control" type="text" value="{{ $rent_data['item_name'] }}" disabled />
                                         </div>
                                         <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                                            <label>Harga Kantin</label>
+                                            <label>Harga Mobil</label>
                                             <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format($rent_data['item_price'] ?? 0, 0, ',', '.') }}" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label>Nama Driver</label>
+                                            <input class="multisteps-form__input form-control" type="text" value="{{ $rent_data['driver_name'] ?? '-' }}" disabled />
+                                        </div>
+                                        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                            <label>Harga Driver</label>
+                                            <input class="multisteps-form__input form-control" type="text" value="{{ "RP " .  number_format($rent_data['driver_cost'] ?? 0, 0, ',', '.') }}" disabled />
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -134,20 +144,20 @@
                                     </div>
 
                                     <div class="button-row d-flex mt-4">
-                                        <a class="btn bg-gradient-light mb-0" href="{{route('adm.building.transactions')}}" >Kembali</a>
+                                        <a class="btn bg-gradient-light mb-0" href="{{route('adm.car.transactions')}}" >Kembali</a>
                                         <div class="ms-auto">
                                             @if ($order->payment_status == 'pending')
                                                 <a class="btn bg-gradient-danger mb-0 " href="{{ route('midtrans.trx.cancel', $order->key) }}" onclick="return confirm('Apakah anda yakin ingin membatalkan transaksi ini!!')">Batalkan Transaksi</a>
                                             @endif
                                             @if ($order->payment_status == 'waiting')
-                                                <a class="btn bg-gradient-danger mb-0 "  href="{{ route('adm.building.order.delete', $order->key) }}" onclick="return confirm('Apakah anda yakin ingin membatalkan penyewaan ini!!')">Batalkan Penyewaan</a>
+                                                <a class="btn bg-gradient-danger mb-0 "  href="{{ route('adm.car.order.delete', $order->key) }}" onclick="return confirm('Apakah anda yakin ingin membatalkan penyewaan ini!!')">Batalkan Penyewaan</a>
                                                 <button type="button" class="btn bg-gradient-success mb-0 " onclick="paynow('{{ $order->snap_token }}', () => { location.replace(location.href) })" >Bayar Sekarang</button>
                                             @endif
                                             @if ($order->payment_status == 'success')
                                                 <a class="btn bg-gradient-dark mb-0 " href="{{ route('midtrans.trx.refund', $order->key) }}" >Refund Transaksi</a>
                                             @endif
                                             @if ($order->payment_status == 'expired' || $order->payment_status == 'cancel')
-                                                <a class="btn bg-gradient-danger mb-0 " onclick="return confirm('Apakah anda yakin ingin menghapus data transaksi ini!!')" href="{{ route('adm.building.order.delete', $order->key) }}" >Hapus Data Order</a>
+                                                <a class="btn bg-gradient-danger mb-0 " onclick="return confirm('Apakah anda yakin ingin menghapus data transaksi ini!!')" href="{{ route('adm.car.order.delete', $order->key) }}" >Hapus Data Order</a>
                                             @endif
                                         </div>
                                     </div>

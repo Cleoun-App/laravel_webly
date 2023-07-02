@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->foreignId('rent_id');
             $table->foreignId('car_id')->unique();
-            $table->foreignId('driver_id')->unique();
+            $table->foreignId('driver_id')->unique()->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->on('users')->references('id');
